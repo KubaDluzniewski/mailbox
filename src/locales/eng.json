@@ -1,0 +1,76 @@
+{
+    "login": "Log in",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "errors": {
+        "login-error": "Login failed, please check your credentials",
+        "fetchMessages": "Error fetching messages",
+        "fetchSent": "Error fetching sent messages"
+    },
+    "input": {
+        "email": "Enter email address",
+        "password": "Enter password"
+    },
+    "common": {
+        "loading": "Loading...",
+        "searching": "Searching..."
+    },
+    "titles": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "drafts": "Drafts",
+        "trash": "Trash",
+        "search": "Search",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "archived": "Archived",
+        "notFound": "Not Found",
+        "messages": "Messages"
+    },
+    "pages": {
+        "archived": {
+            "desc": "This is the archived items page."
+        },
+        "dashboard": {
+            "desc": "This is the dashboard page."
+        },
+        "drafts": {
+            "desc": "This is the drafts page."
+        },
+        "settings": {
+            "desc": "This is the settings page."
+        },
+        "search": {
+            "desc": "This is the search page."
+        },
+        "notifications": {
+            "desc": "This is the notifications page."
+        },
+        "trash": {
+            "desc": "This is the trash page."
+        }
+    },
+    "main": {
+        "drafts": "Drafts",
+        "received": "Inbox",
+        "sent": "Sent",
+        "compose": "Compose",
+        "trash": "Trash"
+    },
+    "compose": {
+        "recipients": "Recipients:",
+        "enterSurnameFragment": "Type surname fragment",
+        "htmlPreview": "HTML content:",
+        "send": "Send message",
+        "editorPlaceholder": "Type here...",
+        "subjectPlaceholder": "Message subject",
+        "sentSuccess": "Message sent",
+        "sentError": "Error sending message"
+    },
+    "messageList": {
+        "noMessages": "No messages",
+        "recipients": "Recipients",
+        "noSubject": "(no subject)"
+    }
+}
