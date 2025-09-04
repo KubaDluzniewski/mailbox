@@ -4,7 +4,6 @@
       <h2 class="text-lg font-semibold">{{ t('titles.messages') }}</h2>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="p-4 text-gray-600 flex items-center">
       <svg class="animate-spin h-5 w-5 mr-2 text-gray-400" viewBox="0 0 24 24">
         <circle
@@ -21,17 +20,14 @@
       {{ t('common.loading') }}
     </div>
 
-    <!-- Error -->
     <div v-else-if="error" class="p-4">
       <div class="rounded border border-red-200 bg-red-50 text-red-700 px-3 py-2">{{ error }}</div>
     </div>
 
-    <!-- Empty -->
     <div v-else-if="messages.length === 0" class="p-6 text-center text-gray-500 italic">
       {{ t('messageList.noMessages') }}
     </div>
 
-    <!-- List -->
     <ul v-else role="list" class="divide-y divide-gray-200">
       <li v-for="(m, idx) in messages" :key="idx">
         <button
@@ -48,6 +44,9 @@
                 {{ m.body }}
               </div>
             </div>
+            <div class="text-sm text-gray-900 truncate">
+              {{ dateToString(new Date(m.sentDate)) }}
+            </div>
           </div>
         </button>
       </li>
@@ -59,6 +58,7 @@
 import { defineProps, withDefaults, toRefs } from 'vue';
 import { GetMessageModel } from '../models/GetMessageModel';
 import { useI18n } from 'vue-i18n';
+import dayjs from 'dayjs';
 const props = withDefaults(
   defineProps<{
     messages?: GetMessageModel[];
@@ -79,6 +79,10 @@ const emit = defineEmits<{
 
 function onSelect(message: GetMessageModel, index: number) {
   emit('select', { message, index });
+}
+
+function dateToString(date: Date) {
+  return dayjs(date).format('DD.MM.YYYY HH:mm');
 }
 const { t } = useI18n();
 </script>

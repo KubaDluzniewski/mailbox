@@ -9,11 +9,14 @@ import router from './router';
 import { i18n } from './utils/i18n';
 
 import { createPinia } from 'pinia';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pl';
 
 const pinia = createPinia();
 
 // Stwórz aplikację i dodaj Pinia
 const app = createApp(App);
+app.config.globalProperties.$dayjs = dayjs;
 app.use(pinia);
 app.use(router);
 // Teraz możemy użyć store
