@@ -45,7 +45,7 @@
               </div>
             </div>
             <div class="text-sm text-gray-900 truncate">
-              {{ dateToString(new Date(m.sentDate)) }}
+              {{ dateToString(m.sentDate) }}
             </div>
           </div>
         </button>
@@ -58,7 +58,7 @@
 import { defineProps, withDefaults, toRefs } from 'vue';
 import { GetMessageModel } from '../models/GetMessageModel';
 import { useI18n } from 'vue-i18n';
-import dayjs from 'dayjs';
+import { dateToString } from '../utils/functions';
 const props = withDefaults(
   defineProps<{
     messages?: GetMessageModel[];
@@ -80,13 +80,5 @@ const emit = defineEmits<{
 function onSelect(message: GetMessageModel, index: number) {
   emit('select', { message, index });
 }
-
-function dateToString(date: Date) {
-  return dayjs(date).format('DD.MM.YYYY HH:mm');
-}
 const { t } = useI18n();
 </script>
-
-<style scoped>
-/* opcjonalne drobne poprawki wyglądu */
-</style>
