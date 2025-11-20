@@ -51,7 +51,7 @@ function logOut() {
 .nav-link:hover {
   background-color: #eef2ff;
 }
-.router-link-active.nav-link {
+.router-link-exact-active.nav-link {
   background-color: #e0e7ff;
   color: #3730a3;
   font-weight: 600;
