@@ -1,6 +1,9 @@
 import { ref, computed } from 'vue';
 import type { Recipient, GroupInfo } from '../types/vicons';
-import { searchRecipients as apiSearchRecipients, getGroupDetails as apiGetGroupDetails } from '../services/api';
+import { getGroupsSuggestions } from '../services/group.service';
+import { getUserSuggestions } from '../services/user.service';
+import type { UserModel } from '../models/UserModel';
+import type { GroupModel } from '../models/GroupModel';
 
 export function useRecipients() {
   const recipientQuery = ref('');
@@ -8,43 +11,9 @@ export function useRecipients() {
   const selectedRecipients = ref<Recipient[]>([]);
   const searchLoading = ref(false);
   const searchError = ref<string | null>(null);
-  const hoveredGroupId = ref<number | null>(null);
-  const groupDetails = ref<Map<number, GroupInfo>>(new Map());
   const loadingGroupDetails = ref(false);
 
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-  const currentGroupDetails = computed(() => {
-    if (!hoveredGroupId.value) return null;
-    return groupDetails.value.get(hoveredGroupId.value) || null;
-  });
-
-  async function fetchGroupDetails(groupId: number) {
-    if (groupDetails.value.has(groupId)) {
-      return groupDetails.value.get(groupId)!;
-    }
-
-    loadingGroupDetails.value = true;
-    try {
-      const groupInfo = await apiGetGroupDetails(groupId);
-      groupDetails.value.set(groupId, groupInfo);
-      return groupInfo;
-    } catch (error) {
-      console.error('Error fetching group details:', error);
-      throw error;
-    } finally {
-      loadingGroupDetails.value = false;
-    }
-  }
-
-  async function onGroupHover(groupId: number) {
-    hoveredGroupId.value = groupId;
-    await fetchGroupDetails(groupId);
-  }
-
-  function onGroupLeave() {
-    hoveredGroupId.value = null;
-  }
 
   function onRecipientInput() {
     if (debounceTimer) clearTimeout(debounceTimer);
@@ -52,8 +21,8 @@ export function useRecipients() {
   }
 
   async function triggerSearch() {
-    const term = recipientQuery.value.trim();
-    if (!term) {
+    const queryValue = recipientQuery.value.trim();
+    if (!queryValue) {
       suggestions.value = [];
       return;
     }
@@ -61,13 +30,26 @@ export function useRecipients() {
     searchError.value = null;
     searchLoading.value = true;
     suggestions.value = [];
-
+1
     try {
-      const results = await apiSearchRecipients(term);
-      suggestions.value = results.filter(
-        (item: Recipient) =>
-          !selectedRecipients.value.some((s: Recipient) => s.type === item.type && s.id === item.id)
-      );
+      const groupResults = await getGroupsSuggestions(queryValue);
+      const userResults: UserModel[] = await getUserSuggestions(queryValue);
+
+      const groupSuggestions: Recipient[] = groupResults.map((g: GroupModel) => ({
+        id: g.id,
+        type: 'group',
+        displayName: g.name,
+        subtitle: 'Grupa',
+      }));
+
+      const userSuggestions: Recipient[] = userResults.map((u: UserModel) => ({
+        id: u.id,
+        type: 'user',
+        displayName: `${u.name} ${u.surname}`,
+        subtitle: u.email,
+      }));
+
+      suggestions.value = [...groupSuggestions, ...userSuggestions];
     } catch (e: any) {
       searchError.value = e.message || 'Błąd wyszukiwania';
     } finally {
@@ -102,11 +84,7 @@ export function useRecipients() {
     selectedRecipients,
     searchLoading,
     searchError,
-    hoveredGroupId,
     loadingGroupDetails,
-    currentGroupDetails,
-    onGroupHover,
-    onGroupLeave,
     onRecipientInput,
     addRecipient,
     removeRecipient,

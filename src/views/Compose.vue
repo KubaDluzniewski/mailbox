@@ -85,8 +85,6 @@
               item.type === 'group' ? 'bg-green-50' : '',
             ]"
             @click="addRecipient(item)"
-            @mouseenter="item.type === 'group' ? onGroupHover(item.id) : null"
-            @mouseleave="item.type === 'group' ? onGroupLeave() : null"
           >
             <div class="flex items-center gap-2 flex-1 min-w-0">
               <!-- Icon -->
@@ -274,10 +272,6 @@ const {
   searchLoading,
   searchError,
   hoveredGroupId,
-  loadingGroupDetails,
-  currentGroupDetails,
-  onGroupHover,
-  onGroupLeave,
   onRecipientInput,
   addRecipient,
   removeRecipient,
@@ -317,7 +311,6 @@ async function send() {
   sendError.value = null;
   try {
     await sendMessage(message.value);
-    // Success - reset form
     subject.value = '';
     selectedRecipients.value = [];
     resetEditor();
