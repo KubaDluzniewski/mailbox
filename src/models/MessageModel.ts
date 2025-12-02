@@ -1,9 +1,7 @@
-export interface MessageRecipientModel {
-  userId: number;
-}
+import type { Recipient } from '../types/vicons';
 
 export interface MessageModel {
   subject: string;
-  recipients: MessageRecipientModel[];
+  recipients: Recipient[];
   body: string;
 }

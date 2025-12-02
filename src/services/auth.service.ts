@@ -17,3 +17,8 @@ export async function login(email: string, password: string): Promise<void> {
     throw new Error('Błąd podczas logowania');
   }
 }
+
+export async function isActive(email: string): Promise<boolean> {
+  const response = await http.put('/auth/isActive', { email });
+  return response.data;
+}
