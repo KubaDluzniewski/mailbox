@@ -32,3 +32,45 @@ export async function getSentMessages(): Promise<MessageModel[]> {
     throw new Error(String(i18n.global.t('errors.fetchSent')));
   }
 }
+
+export async function saveDraft(messageModel: MessageModel): Promise<MessageModel> {
+  try {
+    const response = await http.post<MessageModel>('/message/draft', messageModel);
+    useToastStore().push('success', i18n.global.t('compose.draftSaved') as string);
+    return response.data;
+  } catch (error) {
+    useToastStore().push('error', i18n.global.t('compose.draftSaveError') as string);
+    throw new Error(String(i18n.global.t('compose.draftSaveError')));
+  }
+}
+
+export async function updateDraft(messageModel: MessageModel): Promise<MessageModel> {
+  try {
+    const response = await http.put<MessageModel>(`/message/draft/${messageModel.id}`, messageModel);
+    useToastStore().push('success', i18n.global.t('compose.draftUpdated') as string);
+    return response.data;
+  } catch (error) {
+    useToastStore().push('error', i18n.global.t('compose.draftUpdateError') as string);
+    throw new Error(String(i18n.global.t('compose.draftUpdateError')));
+  }
+}
+
+export async function getDrafts(): Promise<MessageModel[]> {
+  try {
+    const response = await http.get<MessageModel[]>('/message/drafts');
+    return response.data;
+  } catch (error) {
+    useToastStore().push('error', i18n.global.t('compose.draftListError') as string);
+    throw new Error(String(i18n.global.t('compose.draftListError')));
+  }
+}
+
+export async function deleteDraft(id: number): Promise<void> {
+  try {
+    await http.delete(`/message/draft/${id}`);
+    useToastStore().push('success', i18n.global.t('compose.draftDeleted') as string);
+  } catch (error) {
+    useToastStore().push('error', i18n.global.t('compose.draftDeleteError') as string);
+    throw new Error(String(i18n.global.t('compose.draftDeleteError')));
+  }
+}

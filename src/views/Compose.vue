@@ -7,7 +7,6 @@
     <div class="recipients-box">
       <label class="block text-sm font-medium mb-1">{{ t('compose.recipients') }}</label>
 
-      <!-- Selected Recipients Tags -->
       <div class="flex flex-wrap gap-2 mb-2">
         <span
           v-for="r in selectedRecipients"
@@ -151,21 +150,34 @@
       spellcheck="false"
     />
 
-    <button
-      @click="send"
-      :disabled="sending || selectedRecipients.length === 0"
-      type="button"
-      class="btn-send"
-    >
-      {{ sending ? '...' : t('compose.send') }}
-    </button>
+    <div class="flex gap-2 mt-4">
+      <button
+        @click="send"
+        :disabled="sending || selectedRecipients.length === 0"
+        type="button"
+        class="btn-send"
+      >
+        {{ sending ? '...' : t('compose.send') }}
+      </button>
+      <button
+        @click="saveDraftManually"
+        :disabled="sending"
+        type="button"
+        class="btn-send"
+        style="background-color: #6c757d;"
+      >
+        {{ t('compose.saveDraft') }}
+      </button>
+      <span v-if="draftSaved" class="text-green-600 text-xs ml-2">{{ t('compose.draftSaved') }}</span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { sendMessage } from '../services/message.service';
+import { sendMessage, saveDraft, updateDraft } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 import { useRecipients } from '../composables/useRecipients';
 import { useEditor } from '../composables/useEditor';
@@ -178,6 +190,11 @@ const { t } = useI18n();
 const subject = ref('');
 const sending = ref(false);
 const sendError = ref<string | null>(null);
+const draftId = ref<number | null>(null);
+const draftSaved = ref(false);
+let draftSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+const route = useRoute();
+const router = useRouter();
 
 const {
   recipientQuery,
@@ -201,20 +218,25 @@ const {
   resetEditor,
 } = useEditor();
 
+
 // Message model
 const message = ref<MessageModel>({
   subject: '',
   recipients: [],
   body: '',
+  isDraft: true,
 });
 
 function updateMessage() {
   message.value = {
+    id: draftId.value || undefined,
     subject: subject.value,
     recipients: selectedRecipients.value,
     body: content.value,
+    isDraft: true,
   };
 }
+
 
 async function send() {
   if (sending.value || selectedRecipients.value.length === 0) return;
@@ -222,10 +244,12 @@ async function send() {
   sending.value = true;
   sendError.value = null;
   try {
-    await sendMessage(message.value);
+    await sendMessage({ ...message.value, isDraft: false });
     subject.value = '';
     selectedRecipients.value = [];
     resetEditor();
+    draftId.value = null;
+    draftSaved.value = false;
   } catch (e: any) {
     console.error('Błąd wysyłania:', e);
     sendError.value = e.message || 'Błąd wysyłania wiadomości';
@@ -234,7 +258,48 @@ async function send() {
   }
 }
 
+async function saveDraftManually() {
+  await saveOrUpdateDraft();
+}
+
+
+async function saveOrUpdateDraft() {
+  updateMessage();
+  if (!subject.value.trim() || selectedRecipients.value.length === 0) {
+    return;
+  }
+  try {
+    let result: MessageModel;
+    if (draftId.value) {
+      result = await updateDraft(message.value);
+    } else {
+      result = await saveDraft(message.value);
+      draftId.value = result.id || null;
+    }
+    draftSaved.value = true;
+    if (draftSaveTimeout) clearTimeout(draftSaveTimeout);
+    draftSaveTimeout = setTimeout(() => (draftSaved.value = false), 2000);
+  } catch (e) {
+    // opcjonalnie obsłuż błąd
+  }
+}
+
+
 onMounted(() => {
+  // Jeśli w query jest draft, załaduj go
+  if (route.query.draft) {
+    try {
+      const draft: MessageModel = JSON.parse(route.query.draft as string);
+      subject.value = draft.subject || '';
+      selectedRecipients.value = draft.recipients || [];
+      content.value = draft.body || '';
+      draftId.value = draft.id || null;
+      // Wyczyść query po załadowaniu, by nie nadpisywać przy kolejnych wejściach
+      router.replace({ query: { ...route.query, draft: undefined } });
+    } catch (e) {
+      // niepoprawny draft w query
+    }
+  }
   if (editor.value) {
     editor.value.innerHTML = content.value;
   }
@@ -243,6 +308,11 @@ onMounted(() => {
 watch(
   [subject, content, selectedRecipients],
   () => {
+    // autozapis po 1s od ostatniej zmiany
+    if (draftSaveTimeout) clearTimeout(draftSaveTimeout);
+    draftSaveTimeout = setTimeout(() => {
+      saveOrUpdateDraft();
+    }, 1000);
     updateMessage();
   },
   { deep: true }
