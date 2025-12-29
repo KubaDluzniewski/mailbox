@@ -13,6 +13,7 @@ declare module 'vue' {
     Dialog: typeof import('primevue/dialog')['default']
     Fieldset: typeof import('primevue/fieldset')['default']
     FloatLabel: typeof import('primevue/floatlabel')['default']
+    GroupIcon: typeof import('./src/components/icons/GroupIcon.vue')['default']
     InputText: typeof import('primevue/inputtext')['default']
     Message: typeof import('primevue/message')['default']
     MessageList: typeof import('./src/components/MessageList.vue')['default']
@@ -22,5 +23,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Toasts: typeof import('./src/components/Toasts.vue')['default']
+    UserIcon: typeof import('./src/components/icons/UserIcon.vue')['default']
   }
 }

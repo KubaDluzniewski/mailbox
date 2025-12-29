@@ -12,25 +12,23 @@ export function useRecipients() {
   const searchLoading = ref(false);
   const searchError = ref<string | null>(null);
   const loadingGroupDetails = ref(false);
-
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-
-  function onRecipientInput() {
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => triggerSearch(), 300);
-  }
+  let lastQuery = '';
 
   async function triggerSearch() {
     const queryValue = recipientQuery.value.trim();
-    if (!queryValue) {
+    if (!queryValue || queryValue.length < 3) {
       suggestions.value = [];
       return;
     }
 
+    if (queryValue === lastQuery) {
+      return;
+    }
+
+    lastQuery = queryValue;
     searchError.value = null;
     searchLoading.value = true;
     suggestions.value = [];
-1
     try {
       const groupResults = await getGroupsSuggestions(queryValue);
       const userResults: UserModel[] = await getUserSuggestions(queryValue);
@@ -58,7 +56,9 @@ export function useRecipients() {
   }
 
   function addRecipient(item: Recipient) {
-    if (!selectedRecipients.value.some((s: Recipient) => s.type === item.type && s.id === item.id)) {
+    if (
+      !selectedRecipients.value.some((s: Recipient) => s.type === item.type && s.id === item.id)
+    ) {
       selectedRecipients.value.push(item);
     }
     recipientQuery.value = '';
@@ -71,13 +71,6 @@ export function useRecipients() {
     );
   }
 
-  function prepareRecipientsForAPI() {
-    return {
-      userIds: selectedRecipients.value.filter((r) => r.type === 'user').map((r) => r.id),
-      groupIds: selectedRecipients.value.filter((r) => r.type === 'group').map((r) => r.id),
-    };
-  }
-
   return {
     recipientQuery,
     suggestions,
@@ -85,9 +78,8 @@ export function useRecipients() {
     searchLoading,
     searchError,
     loadingGroupDetails,
-    onRecipientInput,
     addRecipient,
     removeRecipient,
-    prepareRecipientsForAPI,
+    triggerSearch,
   };
 }

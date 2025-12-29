@@ -20,23 +20,8 @@
           ]"
         >
           <!-- Icon indicator -->
-          <svg
-            v-if="r.type === 'group'"
-            class="w-3 h-3 flex-shrink-0"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"
-            />
-          </svg>
-          <svg v-else class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <GroupIcon v-if="r.type === 'group'" />
+          <UserIcon v-else />
 
           <span class="flex-shrink-0">{{ r.displayName }}</span>
 
@@ -56,23 +41,20 @@
         </span>
       </div>
 
-      <!-- Search Input -->
       <div class="relative">
         <input
           v-model="recipientQuery"
           :placeholder="t('compose.searchUsersAndGroups')"
-          @input="onRecipientInput"
           @keydown.escape="suggestions = []"
+          @keydown.enter.prevent="triggerSearch"
           class="recipient-input w-full"
         />
 
-        <!-- Loading/Error State -->
         <div v-if="searchLoading" class="text-xs text-gray-500 mt-1">
           {{ t('common.searching') }}
         </div>
         <div v-else-if="searchError" class="text-xs text-red-600 mt-1">{{ searchError }}</div>
 
-        <!-- Suggestions Dropdown -->
         <ul
           v-if="suggestions.length > 0"
           class="absolute top-full left-0 right-0 mt-1 border border-gray-300 rounded bg-white max-h-60 overflow-auto text-sm shadow-lg z-10"
@@ -87,29 +69,11 @@
             @click="addRecipient(item)"
           >
             <div class="flex items-center gap-2 flex-1 min-w-0">
-              <!-- Icon -->
-              <svg
+              <GroupIcon
                 v-if="item.type === 'group'"
                 class="w-4 h-4 text-green-600 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"
-                />
-              </svg>
-              <svg
-                v-else
-                class="w-4 h-4 text-blue-600 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clip-rule="evenodd"
-                />
-              </svg>
+              />
+              <UserIcon v-else class="w-4 h-4 text-blue-600 flex-shrink-0" />
 
               <div class="min-w-0">
                 <div class="font-medium truncate">{{ item.displayName }}</div>
@@ -123,58 +87,6 @@
             >
               Grupa
             </span>
-
-            <!-- Tooltip dla grup -->
-            <div
-              v-if="item.type === 'group' && hoveredGroupId === item.id && currentGroupDetails"
-              class="absolute left-full ml-2 top-0 z-50 bg-white border border-gray-300 rounded-lg shadow-xl p-3 min-w-max max-w-xs pointer-events-none"
-            >
-              <div v-if="loadingGroupDetails" class="text-sm text-gray-500">Ładowanie...</div>
-
-              <div v-else-if="currentGroupDetails">
-                <div class="font-semibold text-gray-800 mb-2 text-sm">
-                  {{ currentGroupDetails.name }}
-                </div>
-                <div class="text-xs text-gray-600 mb-2">
-                  {{ currentGroupDetails.memberCount }} członków
-                </div>
-
-                <!-- Members list -->
-                <ul class="border-t border-gray-200 pt-2 space-y-1 max-h-64 overflow-y-auto">
-                  <li
-                    v-for="member in currentGroupDetails.members"
-                    :key="member.id"
-                    class="text-xs text-gray-700 flex items-center gap-2"
-                  >
-                    <svg
-                      class="w-3 h-3 text-gray-400 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <div class="flex-1 min-w-0">
-                      <div class="font-medium truncate">{{ member.email }}</div>
-                      <div class="text-gray-500 truncate text-xs">
-                        {{ member.name }} {{ member.surname }}
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-
-                <!-- Empty state -->
-                <div
-                  v-if="currentGroupDetails.members.length === 0"
-                  class="text-xs text-gray-500 italic py-2"
-                >
-                  Brak członków w grupie
-                </div>
-              </div>
-            </div>
           </li>
         </ul>
       </div>
@@ -257,6 +169,8 @@ import { sendMessage } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 import { useRecipients } from '../composables/useRecipients';
 import { useEditor } from '../composables/useEditor';
+import GroupIcon from '../components/icons/GroupIcon.vue';
+import UserIcon from '../components/icons/UserIcon.vue';
 
 const { t } = useI18n();
 
@@ -271,11 +185,9 @@ const {
   selectedRecipients,
   searchLoading,
   searchError,
-  hoveredGroupId,
-  onRecipientInput,
   addRecipient,
   removeRecipient,
-  prepareRecipientsForAPI,
+  triggerSearch,
 } = useRecipients();
 
 const {
@@ -328,9 +240,13 @@ onMounted(() => {
   }
 });
 
-watch([subject, content, selectedRecipients], () => {
-  updateMessage();
-}, { deep: true });
+watch(
+  [subject, content, selectedRecipients],
+  () => {
+    updateMessage();
+  },
+  { deep: true }
+);
 </script>
 
 <style scoped>
