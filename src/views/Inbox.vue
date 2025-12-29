@@ -9,7 +9,6 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MessageModel } from '../models/MessageModel';
 import { getMessages } from '../services/message.service';
-import { isActive } from '../services/auth.service';
 
 const messages = ref<MessageModel[]>([]);
 const loading = ref(false);
@@ -30,7 +29,6 @@ async function fetchMessages() {
 
 onMounted(fetchMessages);
 onMounted(() => {
-  isActive;
   fetchMessages();
 });
 </script>

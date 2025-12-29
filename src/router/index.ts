@@ -7,6 +7,7 @@ import Drafts from '../views/Drafts.vue';
 import Sent from '../views/Sent.vue';
 import Compose from '../views/Compose.vue';
 import Trash from '../views/Trash.vue';
+import Confirm from '../views/Confirm.vue';
 import { useUserStore } from '../store/user';
 import AuthLayout from '../layouts/AuthLayout.vue';
 import MainLayout from '../layouts/MainLayout.vue';
@@ -34,6 +35,12 @@ const routes = [
     name: 'Login',
     component: AuthLayout,
     children: [{ path: '', name: 'LoginForm', component: Login }],
+  },
+  {
+    path: '/confirm',
+    name: 'Confirm',
+    component: AuthLayout,
+    children: [{ path: '', name: 'ConfirmForm', component: Confirm }],
   },
 ];
 

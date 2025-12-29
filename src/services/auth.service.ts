@@ -18,7 +18,15 @@ export async function login(email: string, password: string): Promise<void> {
   }
 }
 
+export async function activate(email: string): Promise<void> {
+  await http.post('/auth/activate',  { email } );
+}
+
 export async function isActive(email: string): Promise<boolean> {
   const response = await http.put('/auth/isActive', { email });
   return response.data;
+}
+
+export async function confirm(email: string, token: string): Promise<void> {
+  await http.post('/auth/confirm', { email, token });
 }
