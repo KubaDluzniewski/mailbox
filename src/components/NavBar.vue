@@ -14,9 +14,6 @@
       <li>
         <RouterLink class="nav-link" to="/drafts">{{ t('main.drafts') }}</RouterLink>
       </li>
-      <li>
-        <RouterLink class="nav-link" to="/trash">{{ t('main.trash') }}</RouterLink>
-      </li>
     </ul>
     <button
       type="button"

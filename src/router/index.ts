@@ -6,7 +6,6 @@ import Login from '../views/Login.vue';
 import Drafts from '../views/Drafts.vue';
 import Sent from '../views/Sent.vue';
 import Compose from '../views/Compose.vue';
-import Trash from '../views/Trash.vue';
 import Confirm from '../views/Confirm.vue';
 import { useUserStore } from '../store/user';
 import AuthLayout from '../layouts/AuthLayout.vue';
@@ -27,7 +26,6 @@ const routes = [
       { path: '', name: 'Inbox', component: Inbox },
       { path: '/sent', name: 'Sent', component: Sent },
       { path: '/compose', name: 'Compose', component: Compose },
-      { path: '/trash', name: 'Trash', component: Trash },
     ],
   },
   {
