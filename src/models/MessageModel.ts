@@ -6,4 +6,5 @@ export interface MessageModel {
   recipients: Recipient[];
   body: string;
   isDraft?: boolean;
+  createdAt?: string | Date;
 }

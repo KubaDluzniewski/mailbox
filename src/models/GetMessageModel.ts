@@ -5,9 +5,11 @@ export interface MessageRecipientModel {
 }
 
 export interface GetMessageModel {
+  id?: number;
   subject: string;
   recipients: MessageRecipientModel[];
   body: string;
   sentDate: Date;
   sender: UserModel;
+  createdAt?: string | Date;
 }

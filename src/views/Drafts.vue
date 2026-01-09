@@ -1,4 +1,3 @@
-
 <template>
   <div class="p-2 sm:p-4">
     <MessageList
@@ -6,19 +5,10 @@
       :loading="loading"
       :error="error"
       @select="onSelectDraft"
-      :show-actions="false"
+      :show-delete="true"
+      @delete="removeDraft"
+      :title="t('main.drafts')"
     />
-    <div v-if="drafts.length > 0" class="mt-4 flex flex-col gap-2">
-      <button
-        v-for="draft in drafts"
-        :key="'delete-' + draft.id"
-        @click="removeDraft(draft.id ?? -1)"
-        class="text-red-600 hover:underline self-end text-sm"
-        :disabled="!draft.id"
-      > 
-        {{ t('common.delete') }}: {{ draft.subject || t('common.noSubject') }}
-      </button>
-    </div>
   </div>
 </template>
 
@@ -30,6 +20,7 @@ import type { MessageModel } from '../models/MessageModel';
 import { useI18n } from 'vue-i18n';
 import MessageList from '../components/MessageList.vue';
 import type { UserModel } from '../models/UserModel';
+import type { GetMessageModel } from '../models/GetMessageModel';
 
 const { t } = useI18n();
 const drafts = ref<MessageModel[]>([]);
@@ -39,12 +30,14 @@ const router = useRouter();
 
 const emptyUser: UserModel = { id: 0, email: '', name: '', surname: '', isActive: false };
 const draftsForList = computed(() =>
-  drafts.value.map(d => ({
+  drafts.value.map((d) => ({
+    id: d.id,
     subject: d.subject || t('messageList.noSubject'),
-    recipients: d.recipients ? d.recipients.map(r => ({ userId: r.id })) : [],
+    recipients: d.recipients ? d.recipients.map((r) => ({ userId: r.id })) : [],
     body: d.body,
-    sentDate: new Date(0),
+    sentDate: d.createdAt ? new Date(d.createdAt) : new Date(0),
     sender: emptyUser,
+    createdAt: d.createdAt,
   }))
 );
 
@@ -53,26 +46,26 @@ async function fetchDrafts() {
   error.value = null;
   try {
     drafts.value = await getDrafts();
-    console.log(drafts.value)
   } catch (e: any) {
-    error.value = e.message || 'Błąd pobierania roboczych';
+    error.value = e.message || t('errors.fetchDrafts');
   } finally {
     loading.value = false;
   }
 }
 
-async function removeDraft(id: number) {
-  if (id < 0) return;
+async function removeDraft(message: GetMessageModel) {
+  const id = message.id;
+  if (!id) return;
   try {
     await deleteDraft(id);
-    drafts.value = drafts.value.filter(d => d.id !== id);
+    drafts.value = drafts.value.filter((d) => d.id !== id);
   } catch (e) {
     // obsłuż błąd
   }
 }
 
 function onSelectDraft({ message }: { message: any; index: number }) {
-  const draft = drafts.value.find(d => d.subject === message.subject && d.body === message.body);
+  const draft = drafts.value.find((d) => d.id === message.id);
   if (draft) {
     router.push({ name: 'Compose', query: { draft: JSON.stringify(draft) } });
   }

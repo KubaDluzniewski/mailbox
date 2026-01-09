@@ -33,7 +33,7 @@
                 : 'text-green-600 hover:text-green-900'
             "
             @click="removeRecipient(r)"
-            aria-label="Usuń odbiorcę"
+            :aria-label="t('compose.removeRecipient')"
           >
             ×
           </button>
@@ -84,7 +84,7 @@
               v-if="item.type === 'group'"
               class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded ml-2 flex-shrink-0"
             >
-              Grupa
+              {{ t('compose.group') }}
             </span>
           </li>
         </ul>
@@ -239,6 +239,7 @@ function updateMessage() {
 
 
 async function send() {
+  updateMessage(); // Make sure message.value is up-to-date
   if (sending.value || selectedRecipients.value.length === 0) return;
 
   sending.value = true;
@@ -251,8 +252,8 @@ async function send() {
     draftId.value = null;
     draftSaved.value = false;
   } catch (e: any) {
-    console.error('Błąd wysyłania:', e);
-    sendError.value = e.message || 'Błąd wysyłania wiadomości';
+    console.error(t('errors.sendError'), e);
+    sendError.value = e.message || t('errors.sendMessage');
   } finally {
     sending.value = false;
   }

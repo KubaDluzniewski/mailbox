@@ -26,6 +26,7 @@ const routes = [
       { path: '', name: 'Inbox', component: Inbox },
       { path: '/sent', name: 'Sent', component: Sent },
       { path: '/compose', name: 'Compose', component: Compose },
+      { path: '/settings', name: 'Settings', component: () => import('../views/Settings.vue') },
     ],
   },
   {

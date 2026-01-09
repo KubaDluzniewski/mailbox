@@ -1,3 +1,6 @@
+export async function changeEmail(newEmail: string, currentPassword: string): Promise<void> {
+  await http.post('/users/change-email', { newEmail, currentPassword });
+}
 import http from './http';
 import router from '../router';
 import { useUserStore } from '../store/user';
@@ -18,15 +21,29 @@ export async function login(email: string, password: string): Promise<void> {
   }
 }
 
-export async function activate(email: string): Promise<void> {
-  await http.post('/auth/activate',  { email } );
+export async function activate(email: string, isEmailChange: boolean): Promise<void> {
+  try {
+    await http.post('/auth/activate', { email, isEmailChange });
+    useToastStore().push('success', 'Wysłano email aktywacyjny/zmieniający adres.');
+  } catch (error) {
+    useToastStore().push('error', 'Błąd podczas wysyłania emaila.');
+    throw error;
+  }
 }
 
 export async function isActive(email: string): Promise<boolean> {
-  const response = await http.put('/auth/isActive', { email });
+  const response = await http.put(`/auth/isActive?email=${email}`);
   return response.data;
 }
 
-export async function confirm(email: string, token: string): Promise<void> {
-  await http.post('/auth/confirm', { email, token });
+export async function confirm(
+  email: string,
+  token: string
+): Promise<{ message: string; type: string }> {
+  const response = await http.post('/auth/confirm', { email, token });
+  return response.data;
+}
+
+export async function changePassword(oldPassword: string, newPassword: string): Promise<void> {
+  await http.post('/users/change-password', { oldPassword, newPassword });
 }

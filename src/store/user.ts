@@ -9,10 +9,8 @@ function decodeJwt<T = any>(token: string): T | null {
     const pad = base64.length % 4 ? '='.repeat(4 - (base64.length % 4)) : '';
     const json = atob(base64 + pad);
     const decoded = JSON.parse(json);
-    console.log('Decoded JWT:', decoded);
     return decoded;
   } catch (e) {
-    console.error('Error decoding JWT:', e);
     return null;
   }
 }
@@ -30,8 +28,14 @@ export const useUserStore = defineStore('user', {
       this.token = token;
       if (token) {
         localStorage.setItem('token', token);
-        const payload = decodeJwt<{ exp?: number; sub?: string; email?: string; name?: string; surname?: string; isActive?: string }>(token);
-        console.log('Decoded payload:', payload);
+        const payload = decodeJwt<{
+          exp?: number;
+          sub?: string;
+          email?: string;
+          name?: string;
+          surname?: string;
+          isActive?: string;
+        }>(token);
         this.tokenExp = typeof payload?.exp === 'number' ? payload.exp : null;
         if (payload) {
           this.user = {
@@ -39,9 +43,8 @@ export const useUserStore = defineStore('user', {
             email: payload.email || '',
             name: payload.name || '',
             surname: payload.surname || '',
-            isActive: payload.isActive === 'True'
+            isActive: payload.isActive === 'True',
           };
-          console.log('Set user:', this.user);
         }
         this.scheduleAutoLogout();
       } else {
@@ -62,7 +65,6 @@ export const useUserStore = defineStore('user', {
     },
     initFromStorage() {
       const saved = localStorage.getItem('token');
-      console.log('Saved token:', saved);
       if (saved) this.setToken(saved);
       if (this.isTokenExpired) this.logout();
     },

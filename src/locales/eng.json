@@ -1,1 +1,94 @@
-{}
+{
+  "titles": {
+    "messages": "Messages"
+  },
+  "common": {
+    "loading": "Loading...",
+    "searching": "Searching...",
+    "delete": "Delete",
+    "noSubject": "No Subject"
+  },
+  "messageList": {
+    "noMessages": "No messages to display.",
+    "noSubject": "No Subject"
+  },
+  "main": {
+    "compose": "Compose",
+    "received": "Inbox",
+    "sent": "Sent",
+    "drafts": "Drafts",
+    "settings": "Settings"
+  },
+  "logout": "Logout",
+  "activation": {
+    "title": "Account Activation",
+    "description": "To activate your account, please provide your email address below and we will send you an activation link.",
+    "emailLabel": "Email Address",
+    "sending": "Sending...",
+    "send": "Send Activation Email",
+    "activationEmailSent": "Activation email has been sent.",
+    "activationEmailError": "Error sending activation email.",
+    "iWantToChangeEmail": "I want to change my email address"
+  },
+  "compose": {
+    "subjectPlaceholder": "Subject",
+    "recipients": "Recipients",
+    "searchUsersAndGroups": "Search users and groups...",
+    "send": "Send",
+    "saveDraft": "Save Draft",
+    "draftSaved": "Draft saved!",
+    "removeRecipient": "Remove recipient",
+    "group": "Group",
+    "sentSuccess": "Message sent successfully.",
+    "sentError": "Error sending message.",
+    "draftSaveError": "Error saving draft.",
+    "draftUpdated": "Draft updated successfully.",
+    "draftUpdateError": "Error updating draft.",
+    "draftListError": "Error fetching drafts.",
+    "draftDeleted": "Draft deleted successfully.",
+    "draftDeleteError": "Error deleting draft."
+  },
+  "errors": {
+    "fetchMessages": "Error fetching messages.",
+    "login-error": "Login failed. Please check your credentials.",
+    "fetchSent": "Error fetching sent messages.",
+    "missingTokenOrEmail": "Missing token or email.",
+    "confirmationError": "Confirmation error.",
+    "fetchDrafts": "Error fetching drafts.",
+    "sendError": "Error sending message",
+    "sendMessage": "Error sending message"
+  },
+  "email": "Email",
+  "input": {
+    "email": "Enter your email",
+    "password": "Enter your password"
+  },
+  "password": "Password",
+  "login": "Login",
+  "confirm": {
+    "title": "Account Confirmation",
+    "confirming": "Confirming account...",
+    "confirmed": "Account confirmed! You can now log in.",
+    "goToLogin": "Go to login"
+  },
+  "settings": {
+    "changePassword": {
+      "title": "Change Password",
+      "oldPassword": "Current Password",
+      "newPassword": "New Password",
+      "button": "Change Password",
+      "loadingButton": "Changing...",
+      "success": "Password has been changed.",
+      "error": "Error changing password."
+    },
+    "changeEmail": {
+      "title": "Change Email",
+      "newEmail": "New Email",
+      "currentPassword": "Current Password",
+      "button": "Change Email",
+      "loadingButton": "Changing...",
+      "success": "Email has been changed.",
+      "error": "Error changing email."
+    }
+  }
+}

@@ -14,6 +14,9 @@
       <li>
         <RouterLink class="nav-link" to="/drafts">{{ t('main.drafts') }}</RouterLink>
       </li>
+      <li>
+        <RouterLink class="nav-link" to="/settings">{{ t('main.settings') }}</RouterLink>
+      </li>
     </ul>
     <button
       type="button"

@@ -46,7 +46,10 @@ export async function saveDraft(messageModel: MessageModel): Promise<MessageMode
 
 export async function updateDraft(messageModel: MessageModel): Promise<MessageModel> {
   try {
-    const response = await http.put<MessageModel>(`/message/draft/${messageModel.id}`, messageModel);
+    const response = await http.put<MessageModel>(
+      `/message/draft/${messageModel.id}`,
+      messageModel
+    );
     useToastStore().push('success', i18n.global.t('compose.draftUpdated') as string);
     return response.data;
   } catch (error) {

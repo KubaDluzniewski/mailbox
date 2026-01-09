@@ -1,1 +1,94 @@
-{}
+{
+  "titles": {
+    "messages": "Wiadomości"
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "searching": "Wyszukiwanie...",
+    "delete": "Usuń",
+    "noSubject": "Brak tematu"
+  },
+  "messageList": {
+    "noMessages": "Brak wiadomości do wyświetlenia.",
+    "noSubject": "Brak tematu"
+  },
+  "main": {
+    "compose": "Napisz",
+    "received": "Odebrane",
+    "sent": "Wysłane",
+    "drafts": "Szkice",
+    "settings": "Ustawienia"
+  },
+  "logout": "Wyloguj",
+  "activation": {
+    "title": "Aktywacja konta",
+    "description": "Aby aktywować konto, podaj swój adres e-mail poniżej, a my wyślemy Ci link aktywacyjny.",
+    "emailLabel": "Adres e-mail",
+    "sending": "Wysyłanie...",
+    "send": "Wyślij e-mail aktywacyjny",
+    "activationEmailSent": "E-mail aktywacyjny został wysłany.",
+    "activationEmailError": "Błąd podczas wysyłania e-maila aktywacyjnego.",
+    "iWantToChangeEmail": "Chcę zmienić adres email"
+  },
+  "compose": {
+    "subjectPlaceholder": "Temat",
+    "recipients": "Odbiorcy",
+    "searchUsersAndGroups": "Szukaj użytkowników i grup...",
+    "send": "Wyślij",
+    "saveDraft": "Zapisz szkic",
+    "draftSaved": "Szkic zapisany!",
+    "removeRecipient": "Usuń odbiorcę",
+    "group": "Grupa",
+    "sentSuccess": "Wiadomość wysłana pomyślnie.",
+    "sentError": "Błąd podczas wysyłania wiadomości.",
+    "draftSaveError": "Błąd podczas zapisywania szkicu.",
+    "draftUpdated": "Szkic zaktualizowany pomyślnie.",
+    "draftUpdateError": "Błąd podczas aktualizacji szkicu.",
+    "draftListError": "Błąd podczas pobierania szkiców.",
+    "draftDeleted": "Szkic usunięty pomyślnie.",
+    "draftDeleteError": "Błąd podczas usuwania szkicu."
+  },
+  "errors": {
+    "fetchMessages": "Błąd podczas pobierania wiadomości.",
+    "login-error": "Logowanie nie powiodło się. Sprawdź swoje dane.",
+    "fetchSent": "Błąd podczas pobierania wysłanych wiadomości.",
+    "missingTokenOrEmail": "Brakujący token lub adres e-mail.",
+    "confirmationError": "Błąd potwierdzenia.",
+    "fetchDrafts": "Błąd podczas pobierania szkiców.",
+    "sendError": "Błąd podczas wysyłania wiadomości",
+    "sendMessage": "Błąd podczas wysyłania wiadomości"
+  },
+  "email": "E-mail",
+  "input": {
+    "email": "Wpisz swój adres e-mail",
+    "password": "Wpisz swoje hasło"
+  },
+  "password": "Hasło",
+  "login": "Zaloguj",
+  "confirm": {
+    "title": "Potwierdzenie konta",
+    "confirming": "Potwierdzanie konta...",
+    "confirmed": "Konto potwierdzone! Możesz się teraz zalogować.",
+    "goToLogin": "Przejdź do logowania"
+  },
+  "settings": {
+    "changePassword": {
+      "title": "Zmień hasło",
+      "oldPassword": "Aktualne hasło",
+      "newPassword": "Nowe hasło",
+      "button": "Zmień hasło",
+      "loadingButton": "Zmiana...",
+      "success": "Hasło zostało zmienione.",
+      "error": "Błąd podczas zmiany hasła."
+    },
+    "changeEmail": {
+      "title": "Zmień e-mail",
+      "newEmail": "Nowy e-mail",
+      "currentPassword": "Aktualne hasło",
+      "button": "Zmień e-mail",
+      "loadingButton": "Zmiana...",
+      "success": "E-mail został zmieniony.",
+      "error": "Błąd podczas zmiany e-maila."
+    }
+  }
+}
