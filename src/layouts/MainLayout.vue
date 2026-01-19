@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="flex h-screen font-sans text-slate-900 overflow-hidden">
     <aside
       class="w-72 glass-effect border-r border-white/50 flex flex-col transition-all duration-300 z-30 shadow-xl"
@@ -46,9 +46,7 @@
 
       <main class="flex-1 overflow-hidden p-6">
         <router-view v-slot="{ Component, route }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" :key="route.path" />
-          </transition>
+          <component :is="Component" :key="route.path" />
         </router-view>
       </main>
     </div>
