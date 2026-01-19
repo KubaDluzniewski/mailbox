@@ -6,10 +6,8 @@
     "strict": true,
     "jsx": "preserve",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "types": ["naive-ui/volar"]
+    "skipLibCheck": true
   },
   "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/types/**/*.d.ts"]
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

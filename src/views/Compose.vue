@@ -91,64 +91,7 @@
       </div>
     </div>
 
-    <div class="toolbar">
-      <button
-        @mousedown.prevent="
-          () => {
-            saveSelection();
-            format('bold');
-          }
-        "
-        :class="{ active: activeFormats.bold }"
-        type="button"
-      >
-        <b>B</b>
-      </button>
-      <button
-        @mousedown.prevent="
-          () => {
-            saveSelection();
-            format('italic');
-          }
-        "
-        :class="{ active: activeFormats.italic }"
-        type="button"
-      >
-        <i>I</i>
-      </button>
-      <button
-        @mousedown.prevent="
-          () => {
-            saveSelection();
-            format('underline');
-          }
-        "
-        :class="{ active: activeFormats.underline }"
-        type="button"
-      >
-        <u>U</u>
-      </button>
-    </div>
-
-    <div
-      ref="editor"
-      class="editor"
-      contenteditable="true"
-      @input="updateContent"
-      @mouseup="
-        () => {
-          saveSelection();
-          updateActiveFormats();
-        }
-      "
-      @keyup="
-        () => {
-          saveSelection();
-          updateActiveFormats();
-        }
-      "
-      spellcheck="false"
-    />
+    <TiptapEditor v-model="content" :placeholder="t('compose.messagePlaceholder')" class="mb-4" />
 
     <div class="flex gap-2 mt-4">
       <button
@@ -164,11 +107,13 @@
         :disabled="sending"
         type="button"
         class="btn-send"
-        style="background-color: #6c757d;"
+        style="background-color: #6c757d"
       >
         {{ t('compose.saveDraft') }}
       </button>
-      <span v-if="draftSaved" class="text-green-600 text-xs ml-2">{{ t('compose.draftSaved') }}</span>
+      <span v-if="draftSaved" class="text-green-600 text-xs ml-2">{{
+        t('compose.draftSaved')
+      }}</span>
     </div>
   </div>
 </template>
@@ -180,7 +125,7 @@ import { useI18n } from 'vue-i18n';
 import { sendMessage, saveDraft, updateDraft } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 import { useRecipients } from '../composables/useRecipients';
-import { useEditor } from '../composables/useEditor';
+import TiptapEditor from '../components/TiptapEditor.vue';
 import GroupIcon from '../components/icons/GroupIcon.vue';
 import UserIcon from '../components/icons/UserIcon.vue';
 
@@ -207,17 +152,12 @@ const {
   triggerSearch,
 } = useRecipients();
 
-const {
-  editor,
-  content,
-  activeFormats,
-  saveSelection,
-  updateActiveFormats,
-  format,
-  updateContent,
-  resetEditor,
-} = useEditor();
+// Editor content
+const content = ref('');
 
+function resetEditor() {
+  content.value = '';
+}
 
 // Message model
 const message = ref<MessageModel>({
@@ -236,7 +176,6 @@ function updateMessage() {
     isDraft: true,
   };
 }
-
 
 async function send() {
   updateMessage(); // Make sure message.value is up-to-date
@@ -263,7 +202,6 @@ async function saveDraftManually() {
   await saveOrUpdateDraft();
 }
 
-
 async function saveOrUpdateDraft() {
   updateMessage();
   if (!subject.value.trim() || selectedRecipients.value.length === 0) {
@@ -285,7 +223,6 @@ async function saveOrUpdateDraft() {
   }
 }
 
-
 onMounted(() => {
   // Jeśli w query jest draft, załaduj go
   if (route.query.draft) {
@@ -300,9 +237,6 @@ onMounted(() => {
     } catch (e) {
       // niepoprawny draft w query
     }
-  }
-  if (editor.value) {
-    editor.value.innerHTML = content.value;
   }
 });
 
@@ -353,53 +287,6 @@ watch(
 }
 
 .recipient-input:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.toolbar {
-  display: flex;
-  gap: 8px;
-  margin: 15px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f8f9fa;
-}
-
-.toolbar button {
-  padding: 6px 12px;
-  border: 1px solid #ddd;
-  background-color: white;
-  cursor: pointer;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: all 0.2s;
-}
-
-.toolbar button:hover {
-  background-color: #f0f0f0;
-}
-
-.toolbar button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-.editor {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-height: 200px;
-  padding: 12px;
-  margin: 15px 0;
-  font-size: 14px;
-  line-height: 1.6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.editor:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);

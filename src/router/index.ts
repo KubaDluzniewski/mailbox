@@ -27,6 +27,18 @@ const routes = [
       { path: '/sent', name: 'Sent', component: Sent },
       { path: '/compose', name: 'Compose', component: Compose },
       { path: '/settings', name: 'Settings', component: () => import('../views/Settings.vue') },
+      {
+        path: '/users',
+        name: 'Users',
+        component: () => import('../views/Users.vue'),
+        meta: { requiresAdmin: true },
+      },
+      {
+        path: '/broadcasts',
+        name: 'BroadcastMessages',
+        component: () => import('../views/BroadcastMessages.vue'),
+        meta: { requiresAdmin: true },
+      },
     ],
   },
   {
@@ -56,6 +68,11 @@ router.beforeEach((to, _from, next) => {
 
   if (to.meta.requiresAuth && !userStore.isLoggedIn) {
     return next('/login');
+  }
+
+  // Check if route requires admin role
+  if (to.meta.requiresAdmin && userStore.user?.role !== 'ADMIN') {
+    return next('/');
   }
 
   next();

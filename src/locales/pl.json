@@ -16,8 +16,9 @@
     "compose": "Napisz",
     "received": "Odebrane",
     "sent": "Wysłane",
-    "drafts": "Szkice",
-    "settings": "Ustawienia"
+    "drafts": "Wersje robocze",
+    "settings": "Ustawienia",
+    "search": "Szukaj..."
   },
   "logout": "Wyloguj",
   "activation": {
@@ -32,6 +33,7 @@
   },
   "compose": {
     "subjectPlaceholder": "Temat",
+    "messagePlaceholder": "Napisz swoją wiadomość...",
     "recipients": "Odbiorcy",
     "searchUsersAndGroups": "Szukaj użytkowników i grup...",
     "send": "Wyślij",
@@ -65,6 +67,13 @@
   },
   "password": "Hasło",
   "login": "Zaloguj",
+  "loginPage": {
+    "welcome": "Zaloguj się do swojego konta",
+    "rememberMe": "Zapamiętaj mnie",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "loggingIn": "Logowanie...",
+    "footer": "© 2026 Mailbox. Wszystkie prawa zastrzeżone."
+  },
   "confirm": {
     "title": "Potwierdzenie konta",
     "confirming": "Potwierdzanie konta...",
@@ -90,5 +99,11 @@
       "success": "E-mail został zmieniony.",
       "error": "Błąd podczas zmiany e-maila."
     }
+  },
+  "roles": {
+    "admin": "Administrator",
+    "lecturer": "Wykładowca",
+    "student": "Student",
+    "yourRole": "Twoja rola"
   }
 }

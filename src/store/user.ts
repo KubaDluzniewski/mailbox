@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { UserModel } from '../models/UserModel';
+import { UserRole } from '../models/UserModel';
 
 function decodeJwt<T = any>(token: string): T | null {
   try {
@@ -35,6 +36,7 @@ export const useUserStore = defineStore('user', {
           name?: string;
           surname?: string;
           isActive?: string;
+          role?: string;
         }>(token);
         this.tokenExp = typeof payload?.exp === 'number' ? payload.exp : null;
         if (payload) {
@@ -44,6 +46,7 @@ export const useUserStore = defineStore('user', {
             name: payload.name || '',
             surname: payload.surname || '',
             isActive: payload.isActive === 'True',
+            role: (payload.role as UserRole) || UserRole.STUDENT,
           };
         }
         this.scheduleAutoLogout();
@@ -88,5 +91,8 @@ export const useUserStore = defineStore('user', {
   getters: {
     isLoggedIn: (state) => !!state.token && !((state.tokenExp ?? 0) * 1000 <= Date.now()),
     isTokenExpired: (state) => !state.token || (state.tokenExp ?? 0) * 1000 <= Date.now(),
+    isAdmin: (state) => state.user?.role === UserRole.ADMIN,
+    isLecturer: (state) => state.user?.role === UserRole.LECTURER,
+    isStudent: (state) => state.user?.role === UserRole.STUDENT,
   },
 });

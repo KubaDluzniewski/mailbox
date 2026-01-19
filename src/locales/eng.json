@@ -17,7 +17,8 @@
     "received": "Inbox",
     "sent": "Sent",
     "drafts": "Drafts",
-    "settings": "Settings"
+    "settings": "Settings",
+    "search": "Search..."
   },
   "logout": "Logout",
   "activation": {
@@ -32,6 +33,7 @@
   },
   "compose": {
     "subjectPlaceholder": "Subject",
+    "messagePlaceholder": "Write your message...",
     "recipients": "Recipients",
     "searchUsersAndGroups": "Search users and groups...",
     "send": "Send",
@@ -90,5 +92,11 @@
       "success": "Email has been changed.",
       "error": "Error changing email."
     }
+  },
+  "roles": {
+    "admin": "Administrator",
+    "lecturer": "Lecturer",
+    "student": "Student",
+    "yourRole": "Your role"
   }
 }
