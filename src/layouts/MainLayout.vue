@@ -1,99 +1,87 @@
 <template>
-  <div class="min-h-screen flex bg-gradient-to-br from-sky-50 via-indigo-50 to-violet-50">
-    <aside class="w-64 border-r border-slate-200/70 bg-white/70 backdrop-blur p-4">
+  <div class="flex h-screen font-sans text-slate-900 overflow-hidden">
+    <aside
+      class="w-72 glass-effect border-r border-white/50 flex flex-col transition-all duration-300 z-30 shadow-xl"
+    >
       <NavBar />
     </aside>
-    <main class="flex-1 p-6">
-      <div class="max-w-6xl mx-auto">
-        <router-view />
-      </div>
-    </main>
 
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <header
+        class="h-16 glass-effect border-b border-white/50 flex items-center justify-between px-8 shrink-0 shadow-sm"
+      >
+        <div class="flex-1 max-w-2xl">
+          <div class="relative group"></div>
+        </div>
 
-    <div v-if="!isUserActive" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-        <h2 class="text-xl font-bold mb-4">{{ t('activation.title') }}</h2>
-        <p class="mb-4">{{ t('activation.description') }}</p>
-        <form @submit.prevent="activateAccount">
-          <label for="email" class="block text-sm font-medium mb-2">{{ t('activation.emailLabel') }}</label>
-          <input
-            id="email"
-            v-model="activationEmail"
-            type="email"
-            class="w-full p-2 border border-gray-300 rounded mb-4"
-            required
-          />
-          <div class="flex items-center mb-4">
-            <input
-              id="is-email-change"
-              v-model="isEmailChange"
-              type="checkbox"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+        <div class="flex items-center gap-4 ml-4">
+          <button
+            class="p-2 text-slate-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-full relative transition-all hover-lift group"
+          >
+            <i
+              class="pi pi-bell text-lg transition-transform group-hover:scale-110 group-hover:rotate-12"
+            ></i>
+            <span
+              class="absolute top-2 right-2 w-2 h-2 bg-gradient-to-br from-red-500 to-red-600 rounded-full border-2 border-white animate-pulse-glow"
+            ></span>
+          </button>
+
+          <div class="h-8 w-px bg-slate-200 mx-2"></div>
+
+          <div class="flex items-center gap-3 pl-2">
+            <div class="text-right hidden sm:block">
+              <p class="text-sm font-bold leading-none">{{ userStore.user?.name }}</p>
+              <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">
+                Pracownik
+              </p>
+            </div>
+            <Avatar
+              :label="userInitials"
+              shape="circle"
+              class="bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-lg hover-glow cursor-pointer transition-all hover:scale-110"
             />
-            <label for="is-email-change" class="ml-2 block text-sm text-gray-900">
-              {{ t('activation.iWantToChangeEmail') }}
-            </label>
           </div>
-          <div class="flex justify-end gap-2">
-            <button type="submit" :disabled="activating" class="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50">
-              {{ activating ? t('activation.sending') : t('activation.send') }}
-            </button>
-          </div>
-        </form>
-      </div>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-hidden p-6">
+        <router-view v-slot="{ Component, route }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="route.path" />
+          </transition>
+        </router-view>
+      </main>
     </div>
+    <Toasts />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '../store/user';
-import { activate } from '../services/auth.service';
-import { isActive } from '../services/auth.service';
-import { useToastStore } from '../store/toast';
 
 const { t } = useI18n();
 const userStore = useUserStore();
-const toast = useToastStore();
 
-const user = computed(() => userStore.user);
-const activationEmail = ref(user.value?.email || '');
-const activating = ref(false);
-const isUserActive = ref(true); // Assume active until checked
-const isEmailChange = ref(false);
-
-watch(user, (newUser) => {
-    if (newUser) {
-        activationEmail.value = newUser.email || '';
-    }
-}, { immediate: true });
-
-// Check isActive when user changes
-watch(user, async (newUser) => {
-  if (newUser && newUser.email) {
-    try {
-      const active = await isActive(newUser.email);
-      isUserActive.value = active;
-    } catch (error) {
-      console.error('Error checking isActive:', error);
-      isUserActive.value = true; // Default to active on error
-    }
-  } else {
-    isUserActive.value = true;
-  }
-}, { immediate: true });
-
-async function activateAccount() {
-  activating.value = true;
-  try {
-    await activate(activationEmail.value, isEmailChange.value);
-    toast.push('success', t('activation.activationEmailSent'));
-  } catch (error: any) {
-    const errorMessage = error?.response?.data || t('activation.activationEmailError');
-    toast.push('error', errorMessage);
-  } finally {
-    activating.value = false;
-  }
-}
+const userInitials = computed(() => {
+  return (
+    userStore.user?.name
+      ?.split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase() || 'U'
+  );
+});
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

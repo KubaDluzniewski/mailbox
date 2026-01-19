@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BaseModal: typeof import('./src/components/BaseModal.vue')['default']
     Button: typeof import('primevue/button')['default']
     Composer: typeof import('./src/components/Composer.vue')['default']
     Dialog: typeof import('primevue/dialog')['default']
@@ -19,9 +20,11 @@ declare module 'vue' {
     MessageList: typeof import('./src/components/MessageList.vue')['default']
     Modal: typeof import('./src/components/Auth/Modal.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
+    NavItem: typeof import('./src/components/NavItem.vue')['default']
     Password: typeof import('primevue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TiptapEditor: typeof import('./src/components/TiptapEditor.vue')['default']
     Toasts: typeof import('./src/components/Toasts.vue')['default']
     UserIcon: typeof import('./src/components/icons/UserIcon.vue')['default']
   }
