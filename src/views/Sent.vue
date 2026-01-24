@@ -9,8 +9,63 @@
         <h2 class="text-xl font-black gradient-text">{{ t('main.sent') }}</h2>
         <Button
           icon="pi pi-filter"
-          class="p-button-rounded p-button-text p-button-sm text-slate-400 hover-lift"
+          @click="showFilterPanel = !showFilterPanel"
+          :class="[
+            'p-button-rounded p-button-text p-button-sm hover-lift',
+            filterDate !== 'all' ? 'text-blue-600' : 'text-slate-400',
+          ]"
+          v-tooltip.top="'Filtruj'"
         />
+      </div>
+      <!-- Filter Panel -->
+      <div v-if="showFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
+        <p class="text-xs font-bold text-slate-500 mb-2">Data:</p>
+        <div class="flex gap-2 flex-wrap">
+          <button
+            @click="filterDate = 'all'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterDate === 'all'
+                ? 'bg-slate-700 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Wszystkie
+          </button>
+          <button
+            @click="filterDate = 'today'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterDate === 'today'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Dzisiaj
+          </button>
+          <button
+            @click="filterDate = 'week'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterDate === 'week'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Ostatni tydzień
+          </button>
+          <button
+            @click="filterDate = 'month'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterDate === 'month'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Ostatni miesiąc
+          </button>
+        </div>
       </div>
       <div class="px-5 py-3 border-b border-slate-100/50 bg-white/50">
         <input
@@ -60,7 +115,7 @@
                 </span>
               </div>
               <span class="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">{{
-                formatTime(msg.createdAt)
+                formatTime(msg.sentDate || msg.createdAt)
               }}</span>
             </div>
             <p class="text-sm mb-1 truncate font-medium text-slate-700">
@@ -125,7 +180,7 @@
                 }}
               </p>
               <p class="text-xs text-slate-500">
-                Wysłano: {{ formatDate(selectedMessage?.createdAt) }}
+                Wysłano: {{ formatDate(selectedMessage?.sentDate || selectedMessage?.createdAt) }}
               </p>
             </div>
           </div>
@@ -162,19 +217,51 @@ const messages = ref<MessageModel[]>([]);
 const selectedMessage = ref<MessageModel | null>(null);
 const loading = ref(true);
 const search = ref('');
+const showFilterPanel = ref(false);
+const filterDate = ref<'all' | 'today' | 'week' | 'month'>('all');
 
 const filteredMessages = computed(() => {
-  if (!search.value.trim()) return messages.value;
-  const term = search.value.trim().toLowerCase();
-  return messages.value.filter((msg) => {
-    const subject = msg.subject?.toLowerCase() || '';
-    const body = msg.body?.toLowerCase() || '';
-    const recipients =
-      (msg.recipients && msg.recipients.length > 0
-        ? msg.recipients.map((r) => r.displayName?.toLowerCase()).join(' ')
-        : '') || '';
-    return subject.includes(term) || body.includes(term) || recipients.includes(term);
-  });
+  let result = messages.value;
+
+  // Apply date filter
+  if (filterDate.value !== 'all') {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    result = result.filter((msg) => {
+      const dateField = msg.sentDate || msg.createdAt;
+      if (!dateField) return true;
+      const msgDate = new Date(dateField);
+      if (filterDate.value === 'today') {
+        return msgDate >= today;
+      } else if (filterDate.value === 'week') {
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return msgDate >= weekAgo;
+      } else if (filterDate.value === 'month') {
+        const monthAgo = new Date(today);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        return msgDate >= monthAgo;
+      }
+      return true;
+    });
+  }
+
+  // Apply search filter
+  if (search.value.trim()) {
+    const term = search.value.trim().toLowerCase();
+    result = result.filter((msg) => {
+      const subject = msg.subject?.toLowerCase() || '';
+      const body = msg.body?.toLowerCase() || '';
+      const recipients =
+        (msg.recipients && msg.recipients.length > 0
+          ? msg.recipients.map((r) => r.displayName?.toLowerCase()).join(' ')
+          : '') || '';
+      return subject.includes(term) || body.includes(term) || recipients.includes(term);
+    });
+  }
+
+  return result;
 });
 
 onMounted(async () => {
@@ -189,11 +276,35 @@ onMounted(async () => {
 const formatTime = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const messageDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  // If today, show only time
+  if (messageDate.getTime() === today.getTime()) {
+    return d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // If yesterday
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (messageDate.getTime() === yesterday.getTime()) {
+    return 'Wczoraj';
+  }
+
+  // If this year, show day and month
+  if (d.getFullYear() === now.getFullYear()) {
+    return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
+  }
+
+  // Otherwise show full date
+  return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 const formatDate = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+  const timeStr = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+  return `${dateStr}, ${timeStr}`;
 };
 </script>

@@ -27,12 +27,7 @@
     </RouterLink>
 
     <nav class="flex-1 space-y-2">
-      <NavItem
-        to="/"
-        icon="pi pi-inbox"
-        :label="t('main.received')"
-        :count="unreadCount || inboxCount"
-      />
+      <NavItem to="/" exact icon="pi pi-inbox" :label="t('main.received')" :count="unreadCount" />
       <NavItem to="/sent" icon="pi pi-send" :label="t('main.sent')" />
       <NavItem to="/drafts" icon="pi pi-file" :label="t('main.drafts')" :count="draftsCount" />
 
@@ -43,16 +38,16 @@
       </div>
       <NavItem to="/settings" icon="pi pi-cog" :label="t('main.settings')" />
       <NavItem
-        v-if="userStore.user?.role === 'ADMIN'"
+        v-if="userStore.user?.roles?.includes(UserRole.ADMIN)"
         to="/users"
         icon="pi pi-users"
         label="Użytkownicy"
       />
       <NavItem
-        v-if="userStore.user?.role === 'ADMIN'"
-        to="/broadcasts"
-        icon="pi pi-megaphone"
-        label="Wiadomości Broadcast"
+        v-if="userStore.user?.roles?.includes(UserRole.ADMIN)"
+        to="/history"
+        icon="pi pi-history"
+        label="Historia Wiadomości"
       />
     </nav>
 
@@ -73,32 +68,22 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import NavItem from './NavItem.vue';
 import { useUserStore } from '../store/user';
+import { UserRole } from '../models/UserModel';
 
 const { t } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 
 import { ref, onMounted } from 'vue';
-import { getMessages, getDrafts, getUnreadCount } from '../services/message.service';
+import { useMessageStore } from '../store/message';
+import { storeToRefs } from 'pinia';
 
-const inboxCount = ref(0);
-const unreadCount = ref(0);
-const draftsCount = ref(0);
-
-const fetchCounts = async () => {
-  try {
-    const inbox = await getMessages();
-    inboxCount.value = inbox.length;
-    const drafts = await getDrafts();
-    draftsCount.value = drafts.length;
-    const unread = await getUnreadCount();
-    unreadCount.value = unread;
-  } catch {}
-};
+const messageStore = useMessageStore();
+const { inboxCount, unreadCount, draftsCount } = storeToRefs(messageStore);
 
 onMounted(() => {
-  fetchCounts();
-  setInterval(fetchCounts, 30000); // odświeżaj co 30 sekund
+  messageStore.fetchCounts();
+  setInterval(() => messageStore.fetchCounts(), 30000); // odświeżaj co 30 sekund
 });
 
 const handleLogout = () => {

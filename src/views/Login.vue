@@ -76,14 +76,19 @@
             />
             <span
               class="ml-2 text-sm text-slate-600 group-hover:text-slate-800 transition-colors"
-              >{{ t('login.rememberMe') }}</span
+              >{{ t('loginPage.rememberMe') }}</span
             >
           </label>
-          <a
-            href="#"
-            class="text-sm text-slate-600 hover:text-slate-800 font-medium transition-colors"
-            >{{ t('loginPage.forgotPassword') }}</a
+
+          <button
+            type="button"
+            @click="forgotPassword"
+            class="text-sm text-slate-600 hover:text-slate-800 font-medium transition-colors focus:outline-none flex items-center gap-2"
+            :disabled="loadingReset"
           >
+            <i v-if="loadingReset" class="pi pi-spinner pi-spin"></i>
+            {{ loadingReset ? 'Wysyłanie...' : t('loginPage.forgotPassword') }}
+          </button>
         </div>
 
         <button
@@ -115,13 +120,51 @@
         </p>
       </div>
     </div>
+
+    <!-- Activation Modal -->
+    <BaseModal
+      :visible="showActivationModal"
+      :title="t('activation.title')"
+      @close="showActivationModal = false"
+    >
+      <p class="text-slate-600 mb-4">{{ t('activation.description') }}</p>
+      <div class="mb-4">
+        <label class="block text-sm font-bold mb-2 text-slate-700">{{
+          t('activation.emailLabel')
+        }}</label>
+        <input
+          v-model="activationEmail"
+          type="email"
+          readonly
+          class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-slate-100 cursor-not-allowed focus:outline-none"
+        />
+        <p class="text-xs text-slate-500 mt-1">
+          Link aktywacyjny zostanie wysłany na powyższy adres.
+        </p>
+      </div>
+      <button
+        @click="sendActivationEmail"
+        class="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-xl px-4 py-3 font-bold disabled:opacity-60"
+        :disabled="loadingActivation"
+      >
+        <i v-if="loadingActivation" class="pi pi-spinner pi-spin mr-2"></i>
+        {{ loadingActivation ? t('activation.sending') : t('activation.send') }}
+      </button>
+    </BaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { login } from '../services/auth.service';
+import {
+  login,
+  forgotPassword as forgotPasswordService,
+  activate,
+  isActive,
+} from '../services/auth.service';
+import { useToastStore } from '../store/toast';
+import BaseModal from '../components/BaseModal.vue';
 
 const { t } = useI18n();
 const email = ref('');
@@ -131,15 +174,66 @@ const error = ref<string | null>(null);
 const rememberMe = ref(false);
 const showPassword = ref(false);
 
+const loadingReset = ref(false);
+const showActivationModal = ref(false);
+const activationEmail = ref('');
+const loadingActivation = ref(false);
+
 async function onSubmit() {
   error.value = null;
   loading.value = true;
   try {
-    await login(email.value, password.value);
+    // First check if account is active
+    const accountActive = await isActive(email.value);
+    if (!accountActive) {
+      // Show activation modal
+      activationEmail.value = email.value;
+      showActivationModal.value = true;
+      loading.value = false;
+      return;
+    }
+    await login(email.value, password.value, rememberMe.value);
   } catch (e: any) {
     error.value = e?.message || t('errors.login-error');
   } finally {
     loading.value = false;
+  }
+}
+
+async function sendActivationEmail() {
+  if (!activationEmail.value) return;
+  loadingActivation.value = true;
+  try {
+    await activate(activationEmail.value, false);
+    useToastStore().push('success', t('activation.activationEmailSent'), 5000);
+    showActivationModal.value = false;
+  } catch (e) {
+    useToastStore().push('error', t('activation.activationEmailError'), 5000);
+  } finally {
+    loadingActivation.value = false;
+  }
+}
+
+async function forgotPassword() {
+  if (!email.value) {
+    useToastStore().push(
+      'warning',
+      'Wpisz swój adres email w pole powyżej, aby zresetować hasło.',
+      5000
+    );
+    return;
+  }
+
+  loadingReset.value = true;
+  try {
+    useToastStore().push('info', 'Przetwarzanie...', 2000); // Immediate feedback
+    await forgotPasswordService(email.value);
+    useToastStore().push('success', 'Jeśli konto istnieje, wysłano link resetujący.', 5000);
+  } catch (e: any) {
+    const msg = e.response?.data?.message || 'Błąd połączenia z serwerem';
+    useToastStore().push('error', `Błąd: ${msg}`, 5000);
+  } finally {
+    loadingReset.value = false;
   }
 }
 </script>

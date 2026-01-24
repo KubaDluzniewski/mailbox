@@ -10,5 +10,5 @@ export interface UserModel {
   name: string;
   surname: string;
   isActive: boolean;
-  role: UserRole;
+  roles: UserRole[];
 }

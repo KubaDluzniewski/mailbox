@@ -1,4 +1,4 @@
-import http from './http';
+﻿import http from './http';
 import type { MessageModel } from '../models/MessageModel';
 import { useToastStore } from '../store/toast';
 import { i18n } from '../utils/i18n';
@@ -80,7 +80,7 @@ export async function deleteDraft(id: number): Promise<void> {
 
 export async function markAsRead(messageId: number): Promise<void> {
   try {
-    await http.put(`/message/${messageId}/read`);
+    await http.put(`message/${messageId}/read`);
   } catch (error) {
     useToastStore().push('error', i18n.global.t('errors.markAsRead') as string);
     throw new Error(String(i18n.global.t('errors.markAsRead')));
@@ -89,7 +89,7 @@ export async function markAsRead(messageId: number): Promise<void> {
 
 export async function markAsUnread(messageId: number): Promise<void> {
   try {
-    await http.put(`/message/${messageId}/unread`);
+    await http.put(`message/${messageId}/unread`);
   } catch (error) {
     useToastStore().push('error', i18n.global.t('errors.markAsUnread') as string);
     throw new Error(String(i18n.global.t('errors.markAsUnread')));
@@ -98,19 +98,19 @@ export async function markAsUnread(messageId: number): Promise<void> {
 
 export async function getUnreadCount(): Promise<number> {
   try {
-    const response = await http.get<{ count: number }>('/message/unread-count');
+    const response = await http.get<{ count: number }>('message/unread-count');
     return response.data.count;
   } catch (error) {
     return 0;
   }
 }
 
-export async function getBroadcastMessages(): Promise<MessageModel[]> {
+export async function getAllMessages(): Promise<MessageModel[]> {
   try {
-    const response = await http.get<MessageModel[]>('/message/admin/broadcasts');
+    const response = await http.get<MessageModel[]>('/message/admin/all');
     return response.data;
   } catch (error) {
-    useToastStore().push('error', 'Nie udało się pobrać wiadomości broadcast');
-    throw new Error('Failed to fetch broadcast messages');
+    useToastStore().push('error', 'Nie udało się pobrać historii wiadomości');
+    throw new Error('Failed to fetch message history');
   }
 }

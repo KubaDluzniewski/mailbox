@@ -8,12 +8,115 @@
         class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
       >
         <h2 class="text-xl font-black gradient-text">Zarządzanie użytkownikami</h2>
-        <Button
-          icon="pi pi-plus"
-          label="Dodaj"
-          class="p-button-sm p-button-rounded hover-lift"
-          @click="showCreateDialog = true"
-        />
+        <div class="flex gap-2">
+          <Button
+            icon="pi pi-filter"
+            @click="showUserFilterPanel = !showUserFilterPanel"
+            :class="[
+              'p-button-sm p-button-rounded p-button-outlined hover-lift',
+              filterRole !== 'all' || filterActiveStatus !== 'all' ? 'p-button-info' : '',
+            ]"
+            v-tooltip.top="'Filtruj'"
+          />
+          <Button
+            icon="pi pi-plus"
+            label="Dodaj"
+            class="p-button-sm p-button-rounded hover-lift"
+            @click="showCreateDialog = true"
+          />
+        </div>
+      </div>
+      <!-- Filter Panel -->
+      <div v-if="showUserFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
+        <div class="flex flex-wrap gap-4">
+          <div>
+            <p class="text-xs font-bold text-slate-500 mb-2">Rola:</p>
+            <div class="flex gap-2">
+              <button
+                @click="filterRole = 'all'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterRole === 'all'
+                    ? 'bg-slate-700 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Wszystkie
+              </button>
+              <button
+                @click="filterRole = 'ADMIN'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterRole === 'ADMIN'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Admin
+              </button>
+              <button
+                @click="filterRole = 'LECTURER'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterRole === 'LECTURER'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Wykładowca
+              </button>
+              <button
+                @click="filterRole = 'STUDENT'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterRole === 'STUDENT'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Student
+              </button>
+            </div>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-500 mb-2">Status:</p>
+            <div class="flex gap-2">
+              <button
+                @click="filterActiveStatus = 'all'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterActiveStatus === 'all'
+                    ? 'bg-slate-700 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Wszystkie
+              </button>
+              <button
+                @click="filterActiveStatus = 'active'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterActiveStatus === 'active'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Aktywni
+              </button>
+              <button
+                @click="filterActiveStatus = 'inactive'"
+                :class="[
+                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  filterActiveStatus === 'inactive'
+                    ? 'bg-red-600 text-white'
+                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                ]"
+              >
+                Nieaktywni
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="px-5 py-3 border-b border-slate-100/50 bg-white/50">
         <input
@@ -64,12 +167,14 @@
                 </span>
               </div>
               <span
+                v-for="role in user.roles"
+                :key="role"
                 :class="[
-                  'text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full',
-                  getRoleBadgeClass(user.role),
+                  'text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full mr-1',
+                  getRoleBadgeClass(role),
                 ]"
               >
-                {{ getRoleLabel(user.role) }}
+                {{ getRoleLabel(role) }}
               </span>
             </div>
             <p class="text-xs text-slate-500">{{ user.email }}</p>
@@ -130,9 +235,9 @@
                   <p class="text-sm font-bold text-slate-900">{{ selectedUser.email }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">Rola</p>
+                  <p class="text-xs text-slate-500 font-medium">Role</p>
                   <p class="text-sm font-bold text-slate-900">
-                    {{ getRoleLabel(selectedUser.role) }}
+                    {{ selectedUser.roles?.map((r) => getRoleLabel(r)).join(', ') || 'Brak' }}
                   </p>
                 </div>
                 <div>
@@ -206,14 +311,15 @@
         />
       </div>
       <div>
-        <label for="role" class="block text-sm font-medium text-slate-700 mb-1">Rola</label>
-        <Dropdown
-          id="role"
-          v-model="newUser.role"
+        <label for="roles" class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <MultiSelect
+          id="roles"
+          v-model="newUser.roles"
           :options="roleOptions"
           optionLabel="label"
           optionValue="value"
-          placeholder="Wybierz rolę"
+          placeholder="Wybierz role"
+          display="chip"
         />
       </div>
       <div class="flex items-center gap-2">
@@ -256,14 +362,15 @@
         <InputText id="edit-email" v-model="editUser.email" type="email" placeholder="Email" />
       </div>
       <div>
-        <label for="edit-role" class="block text-sm font-medium text-slate-700 mb-1">Rola</label>
-        <Dropdown
-          id="edit-role"
-          v-model="editUser.role"
+        <label for="edit-roles" class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <MultiSelect
+          id="edit-roles"
+          v-model="editUser.roles"
           :options="roleOptions"
           optionLabel="label"
           optionValue="value"
-          placeholder="Wybierz rolę"
+          placeholder="Wybierz role"
+          display="chip"
         />
       </div>
       <div class="flex items-center gap-2">
@@ -281,13 +388,102 @@
       <Button label="Zapisz" icon="pi pi-check" @click="handleUpdateUser" :loading="updating" />
     </template>
   </Dialog>
+
+  <!-- Delete Confirmation Dialog -->
+  <Dialog
+    v-model:visible="showDeleteDialog"
+    header="Potwierdź usunięcie"
+    :modal="true"
+    :style="{ width: '450px' }"
+  >
+    <div class="flex items-start gap-4">
+      <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
+      <div>
+        <p class="text-lg font-bold mb-2">Czy na pewno chcesz usunąć tego użytkownika?</p>
+        <p class="text-slate-600" v-if="userToDelete">
+          <strong>{{ userToDelete.name }} {{ userToDelete.surname }}</strong>
+          <br />
+          {{ userToDelete.email }}
+        </p>
+        <p class="text-sm text-red-600 mt-3">
+          <i class="pi pi-info-circle mr-1"></i>
+          Ta operacja jest nieodwracalna!
+        </p>
+      </div>
+    </div>
+    <template #footer>
+      <Button
+        label="Anuluj"
+        icon="pi pi-times"
+        @click="showDeleteDialog = false"
+        class="p-button-text"
+      />
+      <Button
+        label="Usuń"
+        icon="pi pi-trash"
+        @click="handleDeleteUser"
+        :loading="deleting"
+        class="p-button-danger"
+      />
+    </template>
+  </Dialog>
+
+  <!-- Toggle Status Confirmation Dialog -->
+  <Dialog
+    v-model:visible="showToggleStatusDialog"
+    :header="userToToggle?.isActive ? 'Potwierdź dezaktywację' : 'Potwierdź aktywację'"
+    :modal="true"
+    :style="{ width: '450px' }"
+  >
+    <div class="flex items-start gap-4">
+      <i
+        :class="[
+          'pi text-4xl',
+          userToToggle?.isActive ? 'pi-ban text-orange-500' : 'pi-check-circle text-green-500',
+        ]"
+      ></i>
+      <div>
+        <p class="text-lg font-bold mb-2">
+          {{
+            userToToggle?.isActive
+              ? 'Czy na pewno chcesz dezaktywować tego użytkownika?'
+              : 'Czy na pewno chcesz aktywować tego użytkownika?'
+          }}
+        </p>
+        <p class="text-slate-600" v-if="userToToggle">
+          <strong>{{ userToToggle.name }} {{ userToToggle.surname }}</strong>
+          <br />
+          {{ userToToggle.email }}
+        </p>
+        <p class="text-sm text-slate-500 mt-3" v-if="userToToggle?.isActive">
+          <i class="pi pi-info-circle mr-1"></i>
+          Użytkownik nie będzie mógł się zalogować.
+        </p>
+      </div>
+    </div>
+    <template #footer>
+      <Button
+        label="Anuluj"
+        icon="pi pi-times"
+        @click="showToggleStatusDialog = false"
+        class="p-button-text"
+      />
+      <Button
+        :label="userToToggle?.isActive ? 'Dezaktywuj' : 'Aktywuj'"
+        :icon="userToToggle?.isActive ? 'pi pi-ban' : 'pi pi-check'"
+        @click="handleToggleStatus"
+        :loading="toggling"
+        :class="userToToggle?.isActive ? 'p-button-warning' : 'p-button-success'"
+      />
+    </template>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Dialog from 'primevue/dialog';
-import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
 import {
   getAllUsers,
   createUser,
@@ -308,13 +504,19 @@ const showCreateDialog = ref(false);
 const showEditDialog = ref(false);
 const creating = ref(false);
 const updating = ref(false);
+const deleting = ref(false);
+const toggling = ref(false);
+const showDeleteDialog = ref(false);
+const showToggleStatusDialog = ref(false);
+const userToDelete = ref<UserDetailModel | null>(null);
+const userToToggle = ref<UserDetailModel | null>(null);
 
 const newUser = ref<CreateUserDto>({
   name: '',
   surname: '',
   email: '',
   password: '',
-  role: 'STUDENT',
+  roles: ['STUDENT'],
   isActive: true,
 });
 
@@ -326,15 +528,37 @@ const roleOptions = [
   { label: 'Student', value: 'STUDENT' },
 ];
 
+const showUserFilterPanel = ref(false);
+const filterRole = ref<'all' | 'ADMIN' | 'LECTURER' | 'STUDENT'>('all');
+const filterActiveStatus = ref<'all' | 'active' | 'inactive'>('all');
+
 const filteredUsers = computed(() => {
-  if (!search.value.trim()) return users.value;
-  const term = search.value.trim().toLowerCase();
-  return users.value.filter((user) => {
-    const name = user.name?.toLowerCase() || '';
-    const surname = user.surname?.toLowerCase() || '';
-    const email = user.email?.toLowerCase() || '';
-    return name.includes(term) || surname.includes(term) || email.includes(term);
-  });
+  let result = users.value;
+
+  // Apply role filter
+  if (filterRole.value !== 'all') {
+    result = result.filter((user) => user.roles?.some((r) => r === filterRole.value));
+  }
+
+  // Apply active status filter
+  if (filterActiveStatus.value === 'active') {
+    result = result.filter((user) => user.isActive);
+  } else if (filterActiveStatus.value === 'inactive') {
+    result = result.filter((user) => !user.isActive);
+  }
+
+  // Apply search filter
+  if (search.value.trim()) {
+    const term = search.value.trim().toLowerCase();
+    result = result.filter((user) => {
+      const name = user.name?.toLowerCase() || '';
+      const surname = user.surname?.toLowerCase() || '';
+      const email = user.email?.toLowerCase() || '';
+      return name.includes(term) || surname.includes(term) || email.includes(term);
+    });
+  }
+
+  return result;
 });
 
 const getRoleLabel = (role: string) => {
@@ -383,7 +607,7 @@ const handleCreateUser = async () => {
       surname: '',
       email: '',
       password: '',
-      role: 'STUDENT',
+      roles: ['STUDENT'],
       isActive: true,
     };
   } catch (error: any) {
@@ -399,7 +623,7 @@ const openEditDialog = () => {
     name: selectedUser.value.name,
     surname: selectedUser.value.surname,
     email: selectedUser.value.email,
-    role: selectedUser.value.role,
+    roles: selectedUser.value.roles || [],
     isActive: selectedUser.value.isActive,
   };
   showEditDialog.value = true;
@@ -423,35 +647,59 @@ const handleUpdateUser = async () => {
   }
 };
 
-const confirmDelete = async () => {
+const confirmDelete = () => {
   if (!selectedUser.value) return;
-  if (
-    !confirm(
-      `Czy na pewno chcesz usunąć użytkownika ${selectedUser.value.name} ${selectedUser.value.surname}?`
-    )
-  )
-    return;
+  userToDelete.value = selectedUser.value;
+  showDeleteDialog.value = true;
+};
 
+const handleDeleteUser = async () => {
+  if (!userToDelete.value) return;
+  deleting.value = true;
   try {
-    await deleteUser(selectedUser.value.id);
-    users.value = users.value.filter((u) => u.id !== selectedUser.value!.id);
-    selectedUser.value = null;
+    await deleteUser(userToDelete.value.id);
+    users.value = users.value.filter((u) => u.id !== userToDelete.value!.id);
+    if (selectedUser.value?.id === userToDelete.value.id) {
+      selectedUser.value = null;
+    }
+    showDeleteDialog.value = false;
+    userToDelete.value = null;
   } catch (error: any) {
     alert(error.message || 'Failed to delete user');
+  } finally {
+    deleting.value = false;
   }
 };
 
-const toggleStatus = async () => {
+const toggleStatus = () => {
   if (!selectedUser.value) return;
+  userToToggle.value = selectedUser.value;
+  showToggleStatusDialog.value = true;
+};
+
+const handleToggleStatus = async () => {
+  if (!userToToggle.value) return;
+  toggling.value = true;
   try {
-    await toggleUserStatus(selectedUser.value.id);
-    selectedUser.value.isActive = !selectedUser.value.isActive;
-    const index = users.value.findIndex((u) => u.id === selectedUser.value!.id);
+    await toggleUserStatus(userToToggle.value.id);
+    const newStatus = !userToToggle.value.isActive;
+    userToToggle.value.isActive = newStatus;
+
+    const index = users.value.findIndex((u) => u.id === userToToggle.value!.id);
     if (index !== -1) {
-      users.value[index].isActive = selectedUser.value.isActive;
+      users.value[index].isActive = newStatus;
     }
+
+    if (selectedUser.value?.id === userToToggle.value.id) {
+      selectedUser.value.isActive = newStatus;
+    }
+
+    showToggleStatusDialog.value = false;
+    userToToggle.value = null;
   } catch (error: any) {
     alert(error.message || 'Failed to toggle user status');
+  } finally {
+    toggling.value = false;
   }
 };
 

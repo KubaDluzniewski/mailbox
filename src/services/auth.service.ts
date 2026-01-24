@@ -6,13 +6,17 @@ import router from '../router';
 import { useUserStore } from '../store/user';
 import { useToastStore } from '../store/toast';
 
-export async function login(email: string, password: string): Promise<void> {
+export async function login(
+  email: string,
+  password: string,
+  remember: boolean = false
+): Promise<void> {
   try {
     const userStore = useUserStore();
     const toast = useToastStore();
     const response = await http.post('/auth/login', { email, password });
     const token = response.data.token;
-    userStore.setToken(token);
+    userStore.setToken(token, remember);
     await router.push('/');
     toast.push('success', 'Zalogowano pomyślnie');
   } catch (error) {
@@ -46,4 +50,17 @@ export async function confirm(
 
 export async function changePassword(oldPassword: string, newPassword: string): Promise<void> {
   await http.post('/users/change-password', { oldPassword, newPassword });
+}
+
+export async function forgotPassword(email: string): Promise<any> {
+  const response = await http.post('/auth/forgot-password', { email });
+  return response.data;
+}
+
+export async function resetPassword(
+  email: string,
+  token: string,
+  newPassword: string
+): Promise<void> {
+  await http.post('/auth/reset-password', { email, token, newPassword });
 }

@@ -9,8 +9,52 @@
         <h2 class="text-xl font-black gradient-text">{{ t('main.received') }}</h2>
         <Button
           icon="pi pi-filter"
-          class="p-button-rounded p-button-text p-button-sm text-slate-400 hover-lift"
+          @click="showFilterPanel = !showFilterPanel"
+          :class="[
+            'p-button-rounded p-button-text p-button-sm hover-lift',
+            filterStatus !== 'all' ? 'text-blue-600' : 'text-slate-400',
+          ]"
+          v-tooltip.top="'Filtruj'"
         />
+      </div>
+      <!-- Filter Panel -->
+      <div v-if="showFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
+        <p class="text-xs font-bold text-slate-500 mb-2">Status:</p>
+        <div class="flex gap-2">
+          <button
+            @click="filterStatus = 'all'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterStatus === 'all'
+                ? 'bg-slate-700 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Wszystkie
+          </button>
+          <button
+            @click="filterStatus = 'unread'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterStatus === 'unread'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Nieprzeczytane
+          </button>
+          <button
+            @click="filterStatus = 'read'"
+            :class="[
+              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              filterStatus === 'read'
+                ? 'bg-green-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100',
+            ]"
+          >
+            Przeczytane
+          </button>
+        </div>
       </div>
       <div class="px-5 py-3 border-b border-slate-100/50 bg-white/50">
         <input
@@ -169,25 +213,43 @@ import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getMessages, markAsRead } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
+import { useMessageStore } from '../store/message';
+
+const messageStore = useMessageStore();
 
 const { t } = useI18n();
 const messages = ref<MessageModel[]>([]);
 const selectedMessage = ref<MessageModel | null>(null);
 const loading = ref(true);
 const search = ref('');
+const showFilterPanel = ref(false);
+const filterStatus = ref<'all' | 'read' | 'unread'>('all');
 
 const filteredMessages = computed(() => {
-  if (!search.value.trim()) return messages.value;
-  const term = search.value.trim().toLowerCase();
-  return messages.value.filter((msg) => {
-    const subject = msg.subject?.toLowerCase() || '';
-    const body = msg.body?.toLowerCase() || '';
-    const recipient =
-      (msg.recipients && msg.recipients.length > 0
-        ? msg.recipients[0].displayName?.toLowerCase()
-        : '') || '';
-    return subject.includes(term) || body.includes(term) || recipient.includes(term);
-  });
+  let result = messages.value;
+
+  // Apply read/unread filter
+  if (filterStatus.value === 'unread') {
+    result = result.filter((msg) => !msg.isRead);
+  } else if (filterStatus.value === 'read') {
+    result = result.filter((msg) => msg.isRead);
+  }
+
+  // Apply search filter
+  if (search.value.trim()) {
+    const term = search.value.trim().toLowerCase();
+    result = result.filter((msg) => {
+      const subject = msg.subject?.toLowerCase() || '';
+      const body = msg.body?.toLowerCase() || '';
+      const recipient =
+        (msg.recipients && msg.recipients.length > 0
+          ? msg.recipients[0].displayName?.toLowerCase()
+          : '') || '';
+      return subject.includes(term) || body.includes(term) || recipient.includes(term);
+    });
+  }
+
+  return result;
 });
 
 onMounted(async () => {
@@ -209,6 +271,8 @@ const handleMessageClick = async (msg: MessageModel) => {
       // Update local state
       msg.isRead = true;
       msg.readAt = new Date();
+      // Update global unread count in store
+      messageStore.fetchCounts();
     } catch (error) {
       console.error('Failed to mark message as read:', error);
     }
@@ -218,11 +282,35 @@ const handleMessageClick = async (msg: MessageModel) => {
 const formatTime = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const messageDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  // If today, show only time
+  if (messageDate.getTime() === today.getTime()) {
+    return d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // If yesterday
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (messageDate.getTime() === yesterday.getTime()) {
+    return 'Wczoraj';
+  }
+
+  // If this year, show day and month
+  if (d.getFullYear() === now.getFullYear()) {
+    return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
+  }
+
+  // Otherwise show full date
+  return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 const formatDate = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateStr = d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+  const timeStr = d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+  return `${dateStr}, ${timeStr}`;
 };
 </script>

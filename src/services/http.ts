@@ -6,7 +6,15 @@ const baseURL = import.meta.env.VITE_API_BASE || 'http://localhost:5128/api';
 const http = axios.create({ baseURL });
 
 // Ścieżki niewymagające JWT – dostosuj do swojego API
-const PUBLIC_PATHS = ['/auth/login', '/auth/refresh'];
+const PUBLIC_PATHS = [
+  '/auth/login',
+  '/auth/refresh',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/auth/activate',
+  '/auth/confirm',
+  '/auth/isActive',
+];
 
 function isPublicRequest(url?: string): boolean {
   if (!url) return false;
@@ -19,10 +27,13 @@ function isPublicRequest(url?: string): boolean {
 http.interceptors.request.use((config) => {
   const userStore = useUserStore();
 
-  // Synchronizacja z localStorage (gdy ktoś ręcznie skasuje/podmieni token)
+  // Synchronizacja z localStorage/sessionStorage (gdy ktoś ręcznie skasuje/podmieni token)
   const lsToken = localStorage.getItem('token');
-  if (userStore.token !== lsToken) {
-    userStore.setToken(lsToken);
+  const ssToken = sessionStorage.getItem('token');
+  const storedToken = lsToken || ssToken;
+
+  if (userStore.token !== storedToken) {
+    userStore.setToken(storedToken, !!lsToken); // remember = true if from localStorage
   }
 
   const token = userStore.token;
@@ -33,8 +44,8 @@ http.interceptors.request.use((config) => {
       return config;
     }
     // Brak tokena dla endpointu wymagającego autoryzacji
-    if (router.currentRoute.value.name !== 'login') {
-      router.push({ name: 'login' });
+    if (router.currentRoute.value.name !== 'Login') {
+      router.push({ name: 'Login' });
     }
     return Promise.reject(new Error('Unauthorized'));
   }
@@ -53,8 +64,8 @@ http.interceptors.response.use(
     if (status === 401 || status === 403) {
       const userStore = useUserStore();
       userStore.logout();
-      if (router.currentRoute.value.name !== 'login') {
-        await router.push({ name: 'login' });
+      if (router.currentRoute.value.name !== 'Login') {
+        await router.push({ name: 'Login' });
       }
     }
     return Promise.reject(error);

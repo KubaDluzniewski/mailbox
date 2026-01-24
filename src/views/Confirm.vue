@@ -1,11 +1,23 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-50 to-sky-50 p-6">
-    <div class="w-full max-w-sm space-y-4 bg-white/90 backdrop-blur rounded-xl shadow p-6 border border-slate-200">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-50 to-sky-50 p-6"
+  >
+    <div
+      class="w-full max-w-sm space-y-4 bg-white/90 backdrop-blur rounded-xl shadow p-6 border border-slate-200"
+    >
       <h1 class="text-xl font-bold text-center">{{ t('confirm.title') }}</h1>
+
       <p v-if="!confirmed && !error" class="text-center">{{ t('confirm.confirming') }}</p>
+
       <p v-if="confirmed" class="text-center text-green-600">{{ t('confirm.confirmed') }}</p>
+
       <p v-if="error" class="text-center text-red-600">{{ error }}</p>
-      <router-link v-if="confirmed" to="/login" class="block text-center bg-indigo-600 text-white rounded px-3 py-2 hover:bg-indigo-700">
+
+      <router-link
+        v-if="confirmed"
+        to="/login"
+        class="block text-center bg-indigo-600 text-white rounded px-3 py-2 hover:bg-indigo-700"
+      >
         {{ t('confirm.goToLogin') }}
       </router-link>
     </div>
@@ -21,7 +33,6 @@ import { useUserStore } from '../store/user';
 
 const { t } = useI18n();
 const route = useRoute();
-const router = useRouter();
 const userStore = useUserStore();
 
 const confirmed = ref(false);

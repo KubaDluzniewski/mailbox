@@ -17,13 +17,21 @@
         <div class="flex items-center gap-4 ml-4">
           <button
             class="p-2 text-slate-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-full relative transition-all hover-lift group"
+            @click="router.push('/')"
           >
             <i
               class="pi pi-bell text-lg transition-transform group-hover:scale-110 group-hover:rotate-12"
             ></i>
-            <span
-              class="absolute top-2 right-2 w-2 h-2 bg-gradient-to-br from-red-500 to-red-600 rounded-full border-2 border-white animate-pulse-glow"
-            ></span>
+            <span v-if="unreadCount > 0" class="absolute top-2 right-2 flex h-4 w-4">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white justify-center items-center"
+              >
+                {{ unreadCount > 9 ? '9+' : unreadCount }}
+              </span>
+            </span>
           </button>
 
           <div class="h-8 w-px bg-slate-200 mx-2"></div>
@@ -32,7 +40,7 @@
             <div class="text-right hidden sm:block">
               <p class="text-sm font-bold leading-none">{{ userStore.user?.name }}</p>
               <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">
-                Pracownik
+                {{ userRoleLabel }}
               </p>
             </div>
             <Avatar
@@ -58,9 +66,16 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '../store/user';
+import { useMessageStore } from '../store/message';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
+
 const userStore = useUserStore();
+const messageStore = useMessageStore();
+const router = useRouter();
+const { unreadCount } = storeToRefs(messageStore);
 
 const userInitials = computed(() => {
   return (
@@ -70,6 +85,25 @@ const userInitials = computed(() => {
       .join('')
       .toUpperCase() || 'U'
   );
+});
+
+const userRoleLabel = computed(() => {
+  const roles = userStore.user?.roles || [];
+  if (roles.length === 0) return 'Pracownik';
+
+  const roleLabels = roles.map((role) => {
+    switch (role) {
+      case 'ADMIN':
+        return 'Administrator';
+      case 'LECTURER':
+        return 'Wykładowca';
+      case 'STUDENT':
+        return 'Student';
+      default:
+        return role;
+    }
+  });
+  return roleLabels.join(', ');
 });
 </script>
 

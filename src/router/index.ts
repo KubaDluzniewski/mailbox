@@ -8,6 +8,7 @@ import Sent from '../views/Sent.vue';
 import Compose from '../views/Compose.vue';
 import Confirm from '../views/Confirm.vue';
 import { useUserStore } from '../store/user';
+import { UserRole } from '../models/UserModel';
 import AuthLayout from '../layouts/AuthLayout.vue';
 import MainLayout from '../layouts/MainLayout.vue';
 
@@ -34,9 +35,9 @@ const routes = [
         meta: { requiresAdmin: true },
       },
       {
-        path: '/broadcasts',
-        name: 'BroadcastMessages',
-        component: () => import('../views/BroadcastMessages.vue'),
+        path: '/history',
+        name: 'MessageHistory',
+        component: () => import('../views/BroadcastMessages.vue'), // View filename kept same for now or could be renamed, but inside it handles all messages
         meta: { requiresAdmin: true },
       },
     ],
@@ -52,6 +53,18 @@ const routes = [
     name: 'Confirm',
     component: AuthLayout,
     children: [{ path: '', name: 'ConfirmForm', component: Confirm }],
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'ResetPasswordForm',
+        component: () => import('../views/ResetPassword.vue'),
+      },
+    ],
   },
 ];
 
@@ -71,7 +84,7 @@ router.beforeEach((to, _from, next) => {
   }
 
   // Check if route requires admin role
-  if (to.meta.requiresAdmin && userStore.user?.role !== 'ADMIN') {
+  if (to.meta.requiresAdmin && !userStore.user?.roles?.includes(UserRole.ADMIN)) {
     return next('/');
   }
 

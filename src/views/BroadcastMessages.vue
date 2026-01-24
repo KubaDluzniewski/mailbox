@@ -7,7 +7,7 @@
       <div
         class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
       >
-        <h2 class="text-xl font-black gradient-text">Wiadomości Broadcast</h2>
+        <h2 class="text-xl font-black gradient-text">Historia Wiadomości</h2>
         <Button
           icon="pi pi-refresh"
           class="p-button-sm p-button-rounded hover-lift"
@@ -25,7 +25,7 @@
           class="flex flex-col items-center justify-center h-full text-slate-400 p-8 text-center"
         >
           <i class="pi pi-inbox text-5xl mb-4 opacity-20"></i>
-          <p class="font-medium text-slate-500">Brak wiadomości broadcast</p>
+          <p class="font-medium text-slate-500">Brak wiadomości w historii</p>
         </div>
         <div v-else>
           <div
@@ -159,7 +159,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getBroadcastMessages } from '../services/message.service';
+import { getAllMessages } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 
 const messages = ref<MessageModel[]>([]);
@@ -169,9 +169,9 @@ const loading = ref(true);
 const loadMessages = async () => {
   loading.value = true;
   try {
-    messages.value = await getBroadcastMessages();
+    messages.value = await getAllMessages();
   } catch (error) {
-    console.error('Failed to load broadcast messages:', error);
+    console.error('Failed to load message history:', error);
   } finally {
     loading.value = false;
   }
@@ -188,7 +188,6 @@ const formatDate = (date: string | Date | undefined) => {
     minute: '2-digit',
   });
 };
-
 
 const getSenderInitials = (sender?: { name: string; surname: string }) => {
   if (!sender?.name || !sender?.surname) return '??';
