@@ -28,6 +28,15 @@
     "medium": "Medium",
     "strong": "Strong"
   },
+  "register": {
+    "title": "Register",
+    "name": "Name",
+    "surname": "Surname",
+    "code": "Registration Code",
+    "submit": "Register",
+    "backToLogin": "Already have an account? Login",
+    "success": "Registration successful. Check your email to activate account."
+  },
   "main": {
     "compose": "Compose",
     "received": "Inbox",
@@ -83,6 +92,14 @@
   },
   "password": "Password",
   "login": "Login",
+  "loginPage": {
+    "welcome": "Log in to your account",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loggingIn": "Logging in...",
+    "footer": "© 2026 Mailbox. All rights reserved.",
+    "noAccount": "Don't have an account? Register"
+  },
   "confirm": {
     "title": "Account Confirmation",
     "confirming": "Confirming account...",

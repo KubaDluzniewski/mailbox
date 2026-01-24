@@ -49,6 +49,18 @@ const routes = [
     children: [{ path: '', name: 'LoginForm', component: Login }],
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'RegisterForm',
+        component: () => import('../views/Register.vue'),
+      },
+    ],
+  },
+  {
     path: '/confirm',
     name: 'Confirm',
     component: AuthLayout,

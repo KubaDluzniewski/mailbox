@@ -28,6 +28,15 @@
     "medium": "Średnie",
     "strong": "Silne"
   },
+  "register": {
+    "title": "Rejestracja",
+    "name": "Imię",
+    "surname": "Nazwisko",
+    "code": "Kod rejestracyjny",
+    "submit": "Zarejestruj się",
+    "backToLogin": "Masz już konto? Zaloguj się",
+    "success": "Rejestracja pomyślna. Sprawdź email, aby aktywować konto."
+  },
   "main": {
     "compose": "Napisz",
     "received": "Odebrane",
@@ -88,7 +97,8 @@
     "rememberMe": "Zapamiętaj mnie",
     "forgotPassword": "Zapomniałeś hasła?",
     "loggingIn": "Logowanie...",
-    "footer": "© 2026 Mailbox. Wszystkie prawa zastrzeżone."
+    "footer": "© 2026 Mailbox. Wszystkie prawa zastrzeżone.",
+    "noAccount": "Nie masz konta? Zarejestruj się"
   },
   "confirm": {
     "title": "Potwierdzenie konta",

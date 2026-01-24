@@ -14,6 +14,7 @@ const PUBLIC_PATHS = [
   '/auth/activate',
   '/auth/confirm',
   '/auth/isActive',
+  '/auth/register',
 ];
 
 function isPublicRequest(url?: string): boolean {

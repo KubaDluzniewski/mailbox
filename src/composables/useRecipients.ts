@@ -1,9 +1,10 @@
-import { ref, computed } from 'vue';
-import type { Recipient, GroupInfo } from '../types/vicons';
+import { ref } from 'vue';
+import type { Recipient } from '../types/vicons';
 import { getGroupsSuggestions } from '../services/group.service';
 import { getUserSuggestions } from '../services/user.service';
-import type { UserModel } from '../models/UserModel';
+import { UserRole, type UserModel } from '../models/UserModel';
 import type { GroupModel } from '../models/GroupModel';
+import { useUserStore } from '../store/user';
 
 export function useRecipients() {
   const recipientQuery = ref('');
@@ -13,6 +14,7 @@ export function useRecipients() {
   const searchError = ref<string | null>(null);
   const loadingGroupDetails = ref(false);
   let lastQuery = '';
+  const userStore = useUserStore();
 
   async function triggerSearch() {
     const queryValue = recipientQuery.value.trim();
@@ -30,8 +32,25 @@ export function useRecipients() {
     searchLoading.value = true;
     suggestions.value = [];
     try {
-      const groupResults = await getGroupsSuggestions(queryValue);
+      const user = userStore.user;
+      const roles = user?.roles || [];
+      const canSendToGroups = roles.includes(UserRole.ADMIN) || roles.includes(UserRole.LECTURER);
+
+      let groupResults: GroupModel[] = [];
+      if (canSendToGroups) {
+        groupResults = await getGroupsSuggestions(queryValue);
+      }
+
       const userResults: UserModel[] = await getUserSuggestions(queryValue);
+
+      // Filter users if current user is Student (and not higher)
+      // Student can only send to ADMIN or LECTURER
+      let filteredUsers = userResults;
+      if (!canSendToGroups) {
+        filteredUsers = userResults.filter(
+          (u) => u.roles.includes(UserRole.ADMIN) || u.roles.includes(UserRole.LECTURER)
+        );
+      }
 
       const groupSuggestions: Recipient[] = groupResults.map((g: GroupModel) => ({
         id: g.id,
@@ -40,7 +59,7 @@ export function useRecipients() {
         subtitle: 'Grupa',
       }));
 
-      const userSuggestions: Recipient[] = userResults.map((u: UserModel) => ({
+      const userSuggestions: Recipient[] = filteredUsers.map((u: UserModel) => ({
         id: u.id,
         type: 'user',
         displayName: `${u.name} ${u.surname}`,

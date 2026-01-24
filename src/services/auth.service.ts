@@ -64,3 +64,15 @@ export async function resetPassword(
 ): Promise<void> {
   await http.post('/auth/reset-password', { email, token, newPassword });
 }
+
+export interface RegisterDto {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  registrationCode: string;
+}
+
+export async function register(dto: RegisterDto): Promise<void> {
+  await http.post('/auth/register', dto);
+}

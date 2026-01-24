@@ -111,6 +111,15 @@
             <p class="text-sm font-medium">{{ error }}</p>
           </div>
         </div>
+
+        <div class="text-center pt-2">
+          <router-link
+            to="/register"
+            class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            {{ t('loginPage.noAccount') }}
+          </router-link>
+        </div>
       </form>
 
       <!-- Footer -->
