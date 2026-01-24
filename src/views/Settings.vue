@@ -99,7 +99,9 @@
                 <i class="pi pi-at text-white text-xl"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">Adres e-mail</h3>
+                <h3 class="font-bold text-slate-800 text-lg">
+                  {{ t('settingsPage.email.title') }}
+                </h3>
                 <p class="text-slate-500 text-sm">{{ userStore.user?.email }}</p>
               </div>
             </div>
@@ -108,7 +110,7 @@
               class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all flex items-center gap-2"
             >
               <i class="pi pi-pencil text-sm"></i>
-              Zmień
+              {{ t('settingsPage.email.change') }}
             </button>
           </div>
         </section>
@@ -125,9 +127,11 @@
                 <i class="pi pi-lock text-white text-xl"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">Hasło</h3>
+                <h3 class="font-bold text-slate-800 text-lg">
+                  {{ t('settingsPage.password.title') }}
+                </h3>
                 <p class="text-slate-500 text-sm">
-                  Ostatnio zmienione: {{ passwordChangedAtFormatted }}
+                  {{ t('settingsPage.password.changed') }}: {{ passwordChangedAtFormatted }}
                 </p>
               </div>
             </div>
@@ -136,36 +140,8 @@
               class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
             >
               <i class="pi pi-key text-sm"></i>
-              Zmień hasło
+              {{ t('settings.changePassword.button') }}
             </button>
-          </div>
-        </section>
-
-        <!-- Notifications Settings -->
-        <section
-          class="glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-          <div class="p-6">
-            <div class="flex items-center gap-4 mb-6">
-              <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg"
-              >
-                <i class="pi pi-bell text-white text-xl"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-slate-800 text-lg">Powiadomienia</h3>
-                <p class="text-slate-500 text-sm">Zarządzaj powiadomieniami email</p>
-              </div>
-            </div>
-            <div class="space-y-4">
-              <div class="flex items-center justify-between py-3">
-                <div>
-                  <p class="font-medium text-slate-700">Nowe wiadomości</p>
-                  <p class="text-xs text-slate-400">Powiadomienia o nowych wiadomościach</p>
-                </div>
-                <InputSwitch v-model="notifyNewMessages" />
-              </div>
-            </div>
           </div>
         </section>
 
@@ -181,8 +157,12 @@
                 <i class="pi pi-globe text-white text-xl"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">Język</h3>
-                <p class="text-slate-500 text-sm">Wybierz preferowany język interfejsu</p>
+                <h3 class="font-bold text-slate-800 text-lg">
+                  {{ t('settingsPage.language.title') }}
+                </h3>
+                <p class="text-slate-500 text-sm">
+                  {{ t('settingsPage.language.description') }}
+                </p>
               </div>
             </div>
             <div class="flex gap-3">
@@ -198,10 +178,10 @@
                 🇵🇱 Polski
               </button>
               <button
-                @click="setLanguage('en')"
+                @click="setLanguage('eng')"
                 :class="[
                   'flex-1 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2',
-                  locale === 'en'
+                  locale === 'eng'
                     ? 'bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow-lg'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                 ]"
@@ -215,10 +195,16 @@
     </div>
 
     <!-- Modals -->
-    <BaseModal :visible="showEmailModal" title="Zmień adres e-mail" @close="showEmailModal = false">
+    <BaseModal
+      :visible="showEmailModal"
+      :title="t('settings.changeEmail.title')"
+      @close="showEmailModal = false"
+    >
       <div class="flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">Nowy adres e-mail</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+            t('settings.changeEmail.newEmail')
+          }}</label>
           <InputText
             v-model="newEmail"
             placeholder="nowy@email.pl"
@@ -226,9 +212,9 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2"
-            >Aktualne hasło (potwierdzenie)</label
-          >
+          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+            t('settings.changeEmail.currentPassword')
+          }}</label>
           <Password
             v-model="modalPassword.old"
             toggleMask
@@ -242,22 +228,28 @@
             @click="showEmailModal = false"
             class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all"
           >
-            Anuluj
+            {{ t('users.dialog.cancel') }}
           </button>
           <button
             @click="changeEmail"
             class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all shadow-lg"
           >
-            Zmień e-mail
+            {{ t('settings.changeEmail.button') }}
           </button>
         </div>
       </div>
     </BaseModal>
 
-    <BaseModal :visible="showPasswordModal" title="Zmień hasło" @close="showPasswordModal = false">
+    <BaseModal
+      :visible="showPasswordModal"
+      :title="t('settings.changePassword.title')"
+      @close="showPasswordModal = false"
+    >
       <div class="flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">Aktualne hasło</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+            t('settings.changePassword.oldPassword')
+          }}</label>
           <Password
             v-model="modalPassword.old"
             toggleMask
@@ -267,10 +259,16 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">Nowe hasło</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+            t('settings.changePassword.newPassword')
+          }}</label>
           <Password
             v-model="modalPassword.new"
             toggleMask
+            :promptLabel="t('passwordStrength.prompt')"
+            :weakLabel="t('passwordStrength.weak')"
+            :mediumLabel="t('passwordStrength.medium')"
+            :strongLabel="t('passwordStrength.strong')"
             class="w-full"
             inputClass="w-full p-3 border-slate-200 rounded-xl"
           />
@@ -280,13 +278,13 @@
             @click="showPasswordModal = false"
             class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all"
           >
-            Anuluj
+            {{ t('users.dialog.cancel') }}
           </button>
           <button
             @click="changePassword"
             class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all shadow-lg"
           >
-            Zmień hasło
+            {{ t('settings.changePassword.button') }}
           </button>
         </div>
       </div>
@@ -300,10 +298,11 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import Password from 'primevue/password';
 import InputText from 'primevue/inputtext';
-import InputSwitch from 'primevue/inputswitch';
+
 import BaseModal from '../components/BaseModal.vue';
 import { useUserStore } from '../store/user';
 import { useToastStore } from '../store/toast';
+import { useAppStore } from '../store/app';
 import {
   changeEmail as apiChangeEmail,
   changePassword as apiChangePassword,
@@ -315,6 +314,7 @@ const { t, locale } = useI18n();
 const router = useRouter();
 const userStore = useUserStore();
 const toastStore = useToastStore();
+const appStore = useAppStore();
 
 const showEmailModal = ref(false);
 const showPasswordModal = ref(false);
@@ -323,9 +323,6 @@ const modalPassword = reactive({
   old: '',
   new: '',
 });
-
-// Notification settings (local UI state for now)
-const notifyNewMessages = ref(true);
 
 // Password changed date
 const passwordChangedAt = ref<Date | null>(null);
@@ -371,11 +368,6 @@ const roleIcon = computed(() => {
   if (roles.includes(UserRole.LECTURER)) return 'pi pi-book';
   return 'pi pi-user';
 });
-
-const setLanguage = (lang: string) => {
-  locale.value = lang;
-  toastStore.push('success', lang === 'pl' ? 'Język zmieniony' : 'Language changed');
-};
 
 const getRoleTranslation = () => {
   const roles = userStore.user?.roles || [];
@@ -423,6 +415,12 @@ const changePassword = async () => {
     toastStore.push('error', e?.message || 'Błąd zmiany hasła');
   }
 };
+
+const setLanguage = (lang: string) => {
+  locale.value = lang;
+  appStore.setLang(lang);
+  toastStore.push('success', lang === 'pl' ? 'Język zmieniony' : 'Language changed');
+};
 </script>
 
 <style scoped>
@@ -453,9 +451,5 @@ const changePassword = async () => {
 
 :deep(.p-password .p-inputtext) {
   width: 100%;
-}
-
-:deep(.p-inputswitch.p-inputswitch-checked .p-inputswitch-slider) {
-  background: linear-gradient(to right, #3b82f6, #2563eb);
 }
 </style>

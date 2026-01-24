@@ -41,13 +41,13 @@
         v-if="userStore.user?.roles?.includes(UserRole.ADMIN)"
         to="/users"
         icon="pi pi-users"
-        label="Użytkownicy"
+        :label="t('nav.users')"
       />
       <NavItem
         v-if="userStore.user?.roles?.includes(UserRole.ADMIN)"
         to="/history"
         icon="pi pi-history"
-        label="Historia Wiadomości"
+        :label="t('nav.messageHistory')"
       />
     </nav>
 

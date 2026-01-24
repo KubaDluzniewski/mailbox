@@ -7,7 +7,7 @@
       <div
         class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
       >
-        <h2 class="text-xl font-black gradient-text">Zarządzanie użytkownikami</h2>
+        <h2 class="text-xl font-black gradient-text">{{ t('users.title') }}</h2>
         <div class="flex gap-2">
           <Button
             icon="pi pi-filter"
@@ -16,11 +16,11 @@
               'p-button-sm p-button-rounded p-button-outlined hover-lift',
               filterRole !== 'all' || filterActiveStatus !== 'all' ? 'p-button-info' : '',
             ]"
-            v-tooltip.top="'Filtruj'"
+            v-tooltip.top="t('users.filter')"
           />
           <Button
             icon="pi pi-plus"
-            label="Dodaj"
+            :label="t('users.add')"
             class="p-button-sm p-button-rounded hover-lift"
             @click="showCreateDialog = true"
           />
@@ -30,7 +30,7 @@
       <div v-if="showUserFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
         <div class="flex flex-wrap gap-4">
           <div>
-            <p class="text-xs font-bold text-slate-500 mb-2">Rola:</p>
+            <p class="text-xs font-bold text-slate-500 mb-2">{{ t('users.role') }}:</p>
             <div class="flex gap-2">
               <button
                 @click="filterRole = 'all'"
@@ -41,7 +41,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Wszystkie
+                {{ t('users.all') }}
               </button>
               <button
                 @click="filterRole = 'ADMIN'"
@@ -52,7 +52,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Admin
+                {{ t('roles.admin') }}
               </button>
               <button
                 @click="filterRole = 'LECTURER'"
@@ -63,7 +63,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Wykładowca
+                {{ t('roles.lecturer') }}
               </button>
               <button
                 @click="filterRole = 'STUDENT'"
@@ -74,12 +74,12 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Student
+                {{ t('roles.student') }}
               </button>
             </div>
           </div>
           <div>
-            <p class="text-xs font-bold text-slate-500 mb-2">Status:</p>
+            <p class="text-xs font-bold text-slate-500 mb-2">{{ t('users.status') }}:</p>
             <div class="flex gap-2">
               <button
                 @click="filterActiveStatus = 'all'"
@@ -90,7 +90,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Wszystkie
+                {{ t('users.all') }}
               </button>
               <button
                 @click="filterActiveStatus = 'active'"
@@ -101,7 +101,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Aktywni
+                {{ t('users.active') }}
               </button>
               <button
                 @click="filterActiveStatus = 'inactive'"
@@ -112,7 +112,7 @@
                     : 'bg-white text-slate-600 hover:bg-slate-100',
                 ]"
               >
-                Nieaktywni
+                {{ t('users.inactive') }}
               </button>
             </div>
           </div>
@@ -122,7 +122,7 @@
         <input
           v-model="search"
           type="text"
-          placeholder="Szukaj użytkowników..."
+          :placeholder="t('users.search')"
           class="w-full p-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
         />
       </div>
@@ -136,7 +136,7 @@
           class="flex flex-col items-center justify-center h-full text-slate-400 p-8 text-center"
         >
           <i class="pi pi-users text-5xl mb-4 opacity-20"></i>
-          <p class="font-medium text-slate-500">Brak użytkowników</p>
+          <p class="font-medium text-slate-500">{{ t('users.noUsers') }}</p>
         </div>
         <div v-else>
           <div
@@ -179,7 +179,7 @@
             </div>
             <p class="text-xs text-slate-500">{{ user.email }}</p>
             <p class="text-[10px] text-slate-400 mt-1">
-              Utworzono: {{ formatDate(user.createdAt) }}
+              {{ t('users.created') }}: {{ formatDate(user.createdAt) }}
             </p>
           </div>
         </div>
@@ -200,7 +200,7 @@
               <Button
                 icon="pi pi-pencil"
                 class="p-button-outlined p-button-sm rounded-xl hover-lift"
-                v-tooltip.top="'Edytuj'"
+                v-tooltip.top="t('users.edit')"
                 @click="openEditDialog"
               />
               <Button
@@ -209,13 +209,13 @@
                   'p-button-outlined p-button-sm rounded-xl hover-lift',
                   selectedUser.isActive ? 'p-button-warning' : 'p-button-success',
                 ]"
-                v-tooltip.top="selectedUser.isActive ? 'Dezaktywuj' : 'Aktywuj'"
+                v-tooltip.top="selectedUser.isActive ? t('users.deactivate') : t('users.activate')"
                 @click="toggleStatus"
               />
               <Button
                 icon="pi pi-trash"
                 class="p-button-outlined p-button-danger p-button-sm rounded-xl hover-lift"
-                v-tooltip.top="'Usuń'"
+                v-tooltip.top="t('users.delete')"
                 @click="confirmDelete"
               />
             </div>
@@ -231,28 +231,36 @@
             <div class="flex-1">
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">Email</p>
+                  <p class="text-xs text-slate-500 font-medium">
+                    {{ t('users.userDetails.email') }}
+                  </p>
                   <p class="text-sm font-bold text-slate-900">{{ selectedUser.email }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">Role</p>
+                  <p class="text-xs text-slate-500 font-medium">
+                    {{ t('users.userDetails.roles') }}
+                  </p>
                   <p class="text-sm font-bold text-slate-900">
-                    {{ selectedUser.roles?.map((r) => getRoleLabel(r)).join(', ') || 'Brak' }}
+                    {{ selectedUser.roles?.map((r) => getRoleLabel(r)).join(', ') || '-' }}
                   </p>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">Status</p>
+                  <p class="text-xs text-slate-500 font-medium">
+                    {{ t('users.userDetails.status') }}
+                  </p>
                   <p
                     :class="[
                       'text-sm font-bold',
                       selectedUser.isActive ? 'text-green-600' : 'text-red-600',
                     ]"
                   >
-                    {{ selectedUser.isActive ? 'Aktywny' : 'Nieaktywny' }}
+                    {{ selectedUser.isActive ? t('users.active') : t('users.inactive') }}
                   </p>
                 </div>
                 <div>
-                  <p class="text-xs text-slate-500 font-medium">Data utworzenia</p>
+                  <p class="text-xs text-slate-500 font-medium">
+                    {{ t('users.userDetails.created') }}
+                  </p>
                   <p class="text-sm font-bold text-slate-900">
                     {{ formatDate(selectedUser.createdAt) }}
                   </p>
@@ -273,7 +281,7 @@
           <i class="pi pi-user text-5xl opacity-20"></i>
         </div>
         <p class="text-lg font-bold text-slate-400">
-          Wybierz użytkownika, aby wyświetlić szczegóły
+          {{ t('users.selectUser') }}
         </p>
       </div>
     </div>
@@ -282,124 +290,162 @@
   <!-- Create User Dialog -->
   <Dialog
     v-model:visible="showCreateDialog"
-    header="Dodaj nowego użytkownika"
+    :header="t('users.dialog.createTitle')"
     :modal="true"
     :style="{ width: '500px' }"
     class="p-fluid"
   >
     <div class="space-y-4">
       <div>
-        <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Imię</label>
-        <InputText id="name" v-model="newUser.name" placeholder="Imię" />
+        <label for="name" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.name')
+        }}</label>
+        <InputText id="name" v-model="newUser.name" :placeholder="t('users.dialog.name')" />
       </div>
       <div>
-        <label for="surname" class="block text-sm font-medium text-slate-700 mb-1">Nazwisko</label>
-        <InputText id="surname" v-model="newUser.surname" placeholder="Nazwisko" />
+        <label for="surname" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.surname')
+        }}</label>
+        <InputText
+          id="surname"
+          v-model="newUser.surname"
+          :placeholder="t('users.dialog.surname')"
+        />
       </div>
       <div>
-        <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+        <label for="email" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.userDetails.email')
+        }}</label>
         <InputText id="email" v-model="newUser.email" type="email" placeholder="Email" />
       </div>
       <div>
-        <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Hasło</label>
+        <label for="password" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('password')
+        }}</label>
         <Password
           id="password"
           v-model="newUser.password"
-          placeholder="Hasło"
+          :placeholder="t('password')"
           :feedback="false"
           toggleMask
         />
       </div>
       <div>
-        <label for="roles" class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <label for="roles" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.roles')
+        }}</label>
         <MultiSelect
           id="roles"
           v-model="newUser.roles"
           :options="roleOptions"
           optionLabel="label"
           optionValue="value"
-          placeholder="Wybierz role"
+          :placeholder="t('users.dialog.roles')"
           display="chip"
         />
       </div>
       <div class="flex items-center gap-2">
         <InputSwitch id="isActive" v-model="newUser.isActive" />
-        <label for="isActive" class="text-sm font-medium text-slate-700">Aktywny</label>
+        <label for="isActive" class="text-sm font-medium text-slate-700">{{
+          t('users.dialog.isActive')
+        }}</label>
       </div>
     </div>
     <template #footer>
       <Button
-        label="Anuluj"
+        :label="t('users.dialog.cancel')"
         icon="pi pi-times"
         @click="showCreateDialog = false"
         class="p-button-text"
       />
-      <Button label="Utwórz" icon="pi pi-check" @click="handleCreateUser" :loading="creating" />
+      <Button
+        :label="t('users.dialog.create')"
+        icon="pi pi-check"
+        @click="handleCreateUser"
+        :loading="creating"
+      />
     </template>
   </Dialog>
 
   <!-- Edit User Dialog -->
   <Dialog
     v-model:visible="showEditDialog"
-    header="Edytuj użytkownika"
+    :header="t('users.dialog.editTitle')"
     :modal="true"
     :style="{ width: '500px' }"
     class="p-fluid"
   >
     <div class="space-y-4" v-if="editUser">
       <div>
-        <label for="edit-name" class="block text-sm font-medium text-slate-700 mb-1">Imię</label>
-        <InputText id="edit-name" v-model="editUser.name" placeholder="Imię" />
+        <label for="edit-name" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.name')
+        }}</label>
+        <InputText id="edit-name" v-model="editUser.name" :placeholder="t('users.dialog.name')" />
       </div>
       <div>
-        <label for="edit-surname" class="block text-sm font-medium text-slate-700 mb-1"
-          >Nazwisko</label
-        >
-        <InputText id="edit-surname" v-model="editUser.surname" placeholder="Nazwisko" />
+        <label for="edit-surname" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.surname')
+        }}</label>
+        <InputText
+          id="edit-surname"
+          v-model="editUser.surname"
+          :placeholder="t('users.dialog.surname')"
+        />
       </div>
       <div>
-        <label for="edit-email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+        <label for="edit-email" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.userDetails.email')
+        }}</label>
         <InputText id="edit-email" v-model="editUser.email" type="email" placeholder="Email" />
       </div>
       <div>
-        <label for="edit-roles" class="block text-sm font-medium text-slate-700 mb-1">Role</label>
+        <label for="edit-roles" class="block text-sm font-medium text-slate-700 mb-1">{{
+          t('users.dialog.roles')
+        }}</label>
         <MultiSelect
           id="edit-roles"
           v-model="editUser.roles"
           :options="roleOptions"
           optionLabel="label"
           optionValue="value"
-          placeholder="Wybierz role"
+          :placeholder="t('users.dialog.roles')"
           display="chip"
         />
       </div>
       <div class="flex items-center gap-2">
         <InputSwitch id="edit-isActive" v-model="editUser.isActive" />
-        <label for="edit-isActive" class="text-sm font-medium text-slate-700">Aktywny</label>
+        <label for="edit-isActive" class="text-sm font-medium text-slate-700">{{
+          t('users.dialog.isActive')
+        }}</label>
       </div>
     </div>
     <template #footer>
       <Button
-        label="Anuluj"
+        :label="t('users.dialog.cancel')"
         icon="pi pi-times"
         @click="showEditDialog = false"
         class="p-button-text"
       />
-      <Button label="Zapisz" icon="pi pi-check" @click="handleUpdateUser" :loading="updating" />
+      <Button
+        :label="t('users.dialog.save')"
+        icon="pi pi-check"
+        @click="handleUpdateUser"
+        :loading="updating"
+      />
     </template>
   </Dialog>
 
   <!-- Delete Confirmation Dialog -->
   <Dialog
     v-model:visible="showDeleteDialog"
-    header="Potwierdź usunięcie"
+    :header="t('users.dialog.deleteTitle')"
     :modal="true"
     :style="{ width: '450px' }"
   >
     <div class="flex items-start gap-4">
       <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
       <div>
-        <p class="text-lg font-bold mb-2">Czy na pewno chcesz usunąć tego użytkownika?</p>
+        <p class="text-lg font-bold mb-2">{{ t('users.dialog.deleteBody') }}</p>
         <p class="text-slate-600" v-if="userToDelete">
           <strong>{{ userToDelete.name }} {{ userToDelete.surname }}</strong>
           <br />
@@ -407,19 +453,19 @@
         </p>
         <p class="text-sm text-red-600 mt-3">
           <i class="pi pi-info-circle mr-1"></i>
-          Ta operacja jest nieodwracalna!
+          {{ t('users.dialog.irreversible') }}
         </p>
       </div>
     </div>
     <template #footer>
       <Button
-        label="Anuluj"
+        :label="t('users.dialog.cancel')"
         icon="pi pi-times"
         @click="showDeleteDialog = false"
         class="p-button-text"
       />
       <Button
-        label="Usuń"
+        :label="t('users.delete')"
         icon="pi pi-trash"
         @click="handleDeleteUser"
         :loading="deleting"
@@ -431,7 +477,7 @@
   <!-- Toggle Status Confirmation Dialog -->
   <Dialog
     v-model:visible="showToggleStatusDialog"
-    :header="userToToggle?.isActive ? 'Potwierdź dezaktywację' : 'Potwierdź aktywację'"
+    :header="t('users.dialog.toggleTitle')"
     :modal="true"
     :style="{ width: '450px' }"
   >
@@ -446,8 +492,8 @@
         <p class="text-lg font-bold mb-2">
           {{
             userToToggle?.isActive
-              ? 'Czy na pewno chcesz dezaktywować tego użytkownika?'
-              : 'Czy na pewno chcesz aktywować tego użytkownika?'
+              ? t('users.dialog.toggleDeactivate')
+              : t('users.dialog.toggleActivate')
           }}
         </p>
         <p class="text-slate-600" v-if="userToToggle">
@@ -457,19 +503,19 @@
         </p>
         <p class="text-sm text-slate-500 mt-3" v-if="userToToggle?.isActive">
           <i class="pi pi-info-circle mr-1"></i>
-          Użytkownik nie będzie mógł się zalogować.
+          {{ t('users.dialog.toggleInfo') }}
         </p>
       </div>
     </div>
     <template #footer>
       <Button
-        label="Anuluj"
+        :label="t('users.dialog.cancel')"
         icon="pi pi-times"
         @click="showToggleStatusDialog = false"
         class="p-button-text"
       />
       <Button
-        :label="userToToggle?.isActive ? 'Dezaktywuj' : 'Aktywuj'"
+        :label="userToToggle?.isActive ? t('users.deactivate') : t('users.activate')"
         :icon="userToToggle?.isActive ? 'pi pi-ban' : 'pi pi-check'"
         @click="handleToggleStatus"
         :loading="toggling"
@@ -495,7 +541,7 @@ import {
   type UpdateUserDto,
 } from '../services/user.service';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const users = ref<UserDetailModel[]>([]);
 const selectedUser = ref<UserDetailModel | null>(null);
 const loading = ref(true);
@@ -522,11 +568,11 @@ const newUser = ref<CreateUserDto>({
 
 const editUser = ref<UpdateUserDto | null>(null);
 
-const roleOptions = [
-  { label: 'Administrator', value: 'ADMIN' },
-  { label: 'Wykładowca', value: 'LECTURER' },
-  { label: 'Student', value: 'STUDENT' },
-];
+const roleOptions = computed(() => [
+  { label: t('roles.admin'), value: 'ADMIN' },
+  { label: t('roles.lecturer'), value: 'LECTURER' },
+  { label: t('roles.student'), value: 'STUDENT' },
+]);
 
 const showUserFilterPanel = ref(false);
 const filterRole = ref<'all' | 'ADMIN' | 'LECTURER' | 'STUDENT'>('all');
@@ -562,7 +608,7 @@ const filteredUsers = computed(() => {
 });
 
 const getRoleLabel = (role: string) => {
-  const option = roleOptions.find((r) => r.value === role);
+  const option = roleOptions.value.find((r) => r.value === role);
   return option?.label || role;
 };
 
@@ -582,7 +628,11 @@ const getRoleBadgeClass = (role: string) => {
 const formatDate = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+  return d.toLocaleDateString(locale.value === 'pl' ? 'pl-PL' : 'en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 };
 
 const loadUsers = async () => {

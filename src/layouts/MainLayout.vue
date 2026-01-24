@@ -47,6 +47,7 @@
               :label="userInitials"
               shape="circle"
               class="bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-lg hover-glow cursor-pointer transition-all hover:scale-110"
+              @click="router.push('/settings')"
             />
           </div>
         </div>
@@ -94,11 +95,11 @@ const userRoleLabel = computed(() => {
   const roleLabels = roles.map((role) => {
     switch (role) {
       case 'ADMIN':
-        return 'Administrator';
+        return t('roles.admin');
       case 'LECTURER':
-        return 'Wykładowca';
+        return t('roles.lecturer');
       case 'STUDENT':
-        return 'Student';
+        return t('roles.student');
       default:
         return role;
     }

@@ -7,7 +7,7 @@
       <div
         class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
       >
-        <h2 class="text-xl font-black gradient-text">Historia Wiadomości</h2>
+        <h2 class="text-xl font-black gradient-text">{{ t('history.title') }}</h2>
         <Button
           icon="pi pi-refresh"
           class="p-button-sm p-button-rounded hover-lift"
@@ -25,7 +25,7 @@
           class="flex flex-col items-center justify-center h-full text-slate-400 p-8 text-center"
         >
           <i class="pi pi-inbox text-5xl mb-4 opacity-20"></i>
-          <p class="font-medium text-slate-500">Brak wiadomości w historii</p>
+          <p class="font-medium text-slate-500">{{ t('history.noHistory') }}</p>
         </div>
         <div v-else>
           <div
@@ -50,11 +50,11 @@
               <span
                 class="text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full bg-blue-100 text-blue-700 ml-2"
               >
-                {{ message.recipientCount }} odbiorców
+                {{ message.recipientCount }} {{ t('history.recipients') }}
               </span>
             </div>
             <p class="text-xs text-slate-600 mb-1">
-              Od: {{ message.sender?.name }} {{ message.sender?.surname }}
+              {{ t('history.from') }}: {{ message.sender?.name }} {{ message.sender?.surname }}
             </p>
             <p class="text-[10px] text-slate-400">
               {{ formatDate(message.sentDate) }}
@@ -94,13 +94,13 @@
 
             <div class="grid grid-cols-2 gap-4 pt-2">
               <div>
-                <p class="text-xs text-slate-500 font-medium">Data wysłania</p>
+                <p class="text-xs text-slate-500 font-medium">{{ t('history.sentDate') }}</p>
                 <p class="text-sm font-bold text-slate-900">
                   {{ formatDate(selectedMessage.sentDate) }}
                 </p>
               </div>
               <div>
-                <p class="text-xs text-slate-500 font-medium">Liczba odbiorców</p>
+                <p class="text-xs text-slate-500 font-medium">{{ t('history.count') }}</p>
                 <p class="text-sm font-bold text-slate-900">
                   {{ selectedMessage.recipientCount }}
                 </p>
@@ -116,7 +116,7 @@
 
           <div class="mt-8 pt-6 border-t border-slate-200">
             <h3 class="text-sm font-bold text-slate-700 mb-3">
-              Odbiorcy ({{ selectedMessage.recipients?.length }})
+              {{ t('history.recipientList') }} ({{ selectedMessage.recipients?.length }})
             </h3>
             <div class="grid grid-cols-2 gap-2">
               <div
@@ -151,7 +151,7 @@
         >
           <i class="pi pi-envelope text-5xl opacity-20"></i>
         </div>
-        <p class="text-lg font-bold text-slate-400">Wybierz wiadomość, aby wyświetlić szczegóły</p>
+        <p class="text-lg font-bold text-slate-400">{{ t('history.selectMessage') }}</p>
       </div>
     </div>
   </div>
@@ -159,9 +159,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { getAllMessages } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 
+const { t, locale } = useI18n();
 const messages = ref<MessageModel[]>([]);
 const selectedMessage = ref<MessageModel | null>(null);
 const loading = ref(true);
@@ -180,7 +182,7 @@ const loadMessages = async () => {
 const formatDate = (date: string | Date | undefined) => {
   if (!date) return '';
   const d = typeof date === 'string' ? new Date(date) : date;
-  return d.toLocaleDateString('pl-PL', {
+  return d.toLocaleDateString(locale.value === 'pl' ? 'pl-PL' : 'en-US', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

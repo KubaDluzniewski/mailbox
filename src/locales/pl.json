@@ -12,6 +12,22 @@
     "noMessages": "Brak wiadomości do wyświetlenia.",
     "noSubject": "Brak tematu"
   },
+  "history": {
+    "title": "Historia Wiadomości",
+    "noHistory": "Brak wiadomości w historii",
+    "recipients": "odbiorców",
+    "from": "Od",
+    "sentDate": "Data wysłania",
+    "recipientList": "Odbiorcy",
+    "selectMessage": "Wybierz wiadomość, aby wyświetlić szczegóły",
+    "count": "Liczba odbiorców"
+  },
+  "passwordStrength": {
+    "prompt": "Wpisz hasło",
+    "weak": "Słabe",
+    "medium": "Średnie",
+    "strong": "Silne"
+  },
   "main": {
     "compose": "Napisz",
     "received": "Odebrane",
@@ -105,5 +121,70 @@
     "lecturer": "Wykładowca",
     "student": "Student",
     "yourRole": "Twoja rola"
+  },
+  "nav": {
+    "users": "Użytkownicy",
+    "messageHistory": "Historia Wiadomości"
+  },
+  "users": {
+    "title": "Zarządzanie użytkownikami",
+    "filter": "Filtruj",
+    "add": "Dodaj",
+    "role": "Rola",
+    "all": "Wszystkie",
+    "status": "Status",
+    "active": "Aktywni",
+    "inactive": "Nieaktywni",
+    "search": "Szukaj użytkowników...",
+    "noUsers": "Brak użytkowników",
+    "created": "Utworzono",
+    "selectUser": "Wybierz użytkownika, aby wyświetlić szczegóły",
+    "activate": "Aktywuj",
+    "deactivate": "Dezaktywuj",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "userDetails": {
+      "email": "Konto email",
+      "roles": "Role w systemie",
+      "status": "Status konta",
+      "created": "Data utworzenia"
+    },
+    "dialog": {
+      "createTitle": "Dodaj nowego użytkownika",
+      "editTitle": "Edytuj użytkownika",
+      "name": "Imię",
+      "surname": "Nazwisko",
+      "roles": "Role",
+      "isActive": "Aktywny",
+      "cancel": "Anuluj",
+      "create": "Utwórz",
+      "save": "Zapisz",
+      "deleteTitle": "Potwierdź usunięcie",
+      "deleteBody": "Czy na pewno chcesz usunąć tego użytkownika?",
+      "irreversible": "Ta operacja jest nieodwracalna!",
+      "toggleTitle": "Potwierdź zmianę statusu",
+      "toggleActivate": "Czy na pewno chcesz aktywować tego użytkownika?",
+      "toggleDeactivate": "Czy na pewno chcesz dezaktywować tego użytkownika?",
+      "toggleInfo": "Użytkownik nie będzie mógł się zalogować."
+    }
+  },
+  "settingsPage": {
+    "language": {
+      "title": "Język",
+      "description": "Wybierz preferowany język interfejsu"
+    },
+    "password": {
+      "title": "Hasło",
+      "changed": "Ostatnio zmienione"
+    },
+    "email": {
+      "title": "Adres e-mail",
+      "change": "Zmień"
+    },
+    "notifications": {
+      "title": "Powiadomienia",
+      "description": "Zarządzaj powiadomieniami",
+      "newMessages": "Nowe wiadomości"
+    }
   }
 }
