@@ -1,10 +1,11 @@
-export async function changeEmail(newEmail: string, currentPassword: string): Promise<void> {
-  await http.post('/users/change-email', { newEmail, currentPassword });
-}
 import http from './http';
 import router from '../router';
 import { useUserStore } from '../store/user';
 import { useToastStore } from '../store/toast';
+
+export async function changeEmail(newEmail: string, currentPassword: string): Promise<void> {
+  await http.post('/users/change-email', { newEmail, currentPassword });
+}
 
 export async function login(
   email: string,
@@ -20,8 +21,7 @@ export async function login(
     await router.push('/');
     toast.push('success', 'Zalogowano pomyślnie');
   } catch (error) {
-    useToastStore().push('error', 'Błąd podczas logowania');
-    throw new Error('Błąd podczas logowania');
+    throw error;
   }
 }
 

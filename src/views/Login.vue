@@ -105,13 +105,6 @@
           </span>
         </button>
 
-        <div v-if="error" class="bg-red-50 border border-red-200 rounded-xl p-4">
-          <div class="flex items-center gap-2 text-red-700">
-            <i class="pi pi-exclamation-circle"></i>
-            <p class="text-sm font-medium">{{ error }}</p>
-          </div>
-        </div>
-
         <div class="text-center pt-2">
           <router-link
             to="/register"
@@ -129,97 +122,42 @@
         </p>
       </div>
     </div>
-
-    <!-- Activation Modal -->
-    <BaseModal
-      :visible="showActivationModal"
-      :title="t('activation.title')"
-      @close="showActivationModal = false"
-    >
-      <p class="text-slate-600 mb-4">{{ t('activation.description') }}</p>
-      <div class="mb-4">
-        <label class="block text-sm font-bold mb-2 text-slate-700">{{
-          t('activation.emailLabel')
-        }}</label>
-        <input
-          v-model="activationEmail"
-          type="email"
-          readonly
-          class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-slate-100 cursor-not-allowed focus:outline-none"
-        />
-        <p class="text-xs text-slate-500 mt-1">
-          Link aktywacyjny zostanie wysłany na powyższy adres.
-        </p>
-      </div>
-      <button
-        @click="sendActivationEmail"
-        class="w-full bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-800 hover:to-slate-900 text-white rounded-xl px-4 py-3 font-bold disabled:opacity-60"
-        :disabled="loadingActivation"
-      >
-        <i v-if="loadingActivation" class="pi pi-spinner pi-spin mr-2"></i>
-        {{ loadingActivation ? t('activation.sending') : t('activation.send') }}
-      </button>
-    </BaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import {
-  login,
-  forgotPassword as forgotPasswordService,
-  activate,
-  isActive,
-} from '../services/auth.service';
+import { login, forgotPassword as forgotPasswordService } from '../services/auth.service';
 import { useToastStore } from '../store/toast';
-import BaseModal from '../components/BaseModal.vue';
 
 const { t } = useI18n();
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
-const error = ref<string | null>(null);
 const rememberMe = ref(false);
 const showPassword = ref(false);
 
 const loadingReset = ref(false);
-const showActivationModal = ref(false);
-const activationEmail = ref('');
-const loadingActivation = ref(false);
 
 async function onSubmit() {
-  error.value = null;
   loading.value = true;
   try {
-    // First check if account is active
-    const accountActive = await isActive(email.value);
-    if (!accountActive) {
-      // Show activation modal
-      activationEmail.value = email.value;
-      showActivationModal.value = true;
-      loading.value = false;
-      return;
-    }
     await login(email.value, password.value, rememberMe.value);
   } catch (e: any) {
-    error.value = e?.message || t('errors.login-error');
+    const toast = useToastStore();
+    if (
+      e.response &&
+      e.response.status === 403 &&
+      e.response.data &&
+      e.response.data.message === 'Account is not active.'
+    ) {
+      toast.push('error', 'Konto nie istnieje lub nie jest aktywne.');
+    } else {
+      toast.push('error', e?.message || t('errors.login-error'));
+    }
   } finally {
     loading.value = false;
-  }
-}
-
-async function sendActivationEmail() {
-  if (!activationEmail.value) return;
-  loadingActivation.value = true;
-  try {
-    await activate(activationEmail.value, false);
-    useToastStore().push('success', t('activation.activationEmailSent'), 5000);
-    showActivationModal.value = false;
-  } catch (e) {
-    useToastStore().push('error', t('activation.activationEmailError'), 5000);
-  } finally {
-    loadingActivation.value = false;
   }
 }
 

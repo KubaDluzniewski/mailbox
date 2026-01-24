@@ -62,6 +62,13 @@ http.interceptors.response.use(
   (resp) => resp,
   async (error) => {
     const status = error?.response?.status;
+    const url = error?.config?.url;
+
+    // Ignore auth endpoints from global handling
+    if (url && (url.includes('/auth/login') || url.includes('/auth/register'))) {
+      return Promise.reject(error);
+    }
+
     if (status === 401 || status === 403) {
       const userStore = useUserStore();
       userStore.logout();
