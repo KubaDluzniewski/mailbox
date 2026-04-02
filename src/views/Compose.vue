@@ -93,6 +93,46 @@
 
     <TiptapEditor v-model="content" :placeholder="t('compose.messagePlaceholder')" class="mb-4" />
 
+    <div class="attachments-box mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <label class="text-sm font-medium">{{ t('compose.attachments') }}</label>
+        <label class="btn-attach" for="compose-attachments-input">
+          {{ t('compose.addAttachment') }}
+        </label>
+      </div>
+      <input
+        id="compose-attachments-input"
+        type="file"
+        multiple
+        class="hidden"
+        @change="onAttachmentsChange"
+      />
+
+      <div v-if="attachments.length === 0" class="text-xs text-slate-500">
+        {{ t('compose.noAttachments') }}
+      </div>
+
+      <ul v-else class="space-y-2">
+        <li
+          v-for="(attachment, index) in attachments"
+          :key="`${attachment.fileName}-${index}`"
+          class="flex items-center justify-between p-2 rounded border border-slate-200 bg-slate-50"
+        >
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-slate-800 truncate">{{ attachment.fileName }}</p>
+            <p class="text-[11px] text-slate-500">{{ formatFileSize(attachment.fileSize || 0) }}</p>
+          </div>
+          <button
+            type="button"
+            class="text-xs px-2 py-1 rounded bg-white border border-slate-300 hover:bg-slate-100"
+            @click="removeAttachment(index)"
+          >
+            {{ t('common.delete') }}
+          </button>
+        </li>
+      </ul>
+    </div>
+
     <div class="flex gap-2 mt-4">
       <button
         @click="send"
@@ -123,7 +163,7 @@ import { ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { sendMessage, saveDraft, updateDraft } from '../services/message.service';
-import type { MessageModel } from '../models/MessageModel';
+import type { MessageModel, MessageAttachmentModel } from '../models/MessageModel';
 import { useRecipients } from '../composables/useRecipients';
 import TiptapEditor from '../components/TiptapEditor.vue';
 import GroupIcon from '../components/icons/GroupIcon.vue';
@@ -154,6 +194,39 @@ const {
 
 // Editor content
 const content = ref('');
+const attachments = ref<MessageAttachmentModel[]>([]);
+
+function onAttachmentsChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const files = input.files;
+  if (!files || files.length === 0) return;
+
+  for (const file of Array.from(files)) {
+    const alreadyAdded = attachments.value.some(
+      (item) => item.fileName === file.name && item.fileSize === file.size
+    );
+    if (alreadyAdded) continue;
+
+    attachments.value.push({
+      fileName: file.name,
+      contentType: file.type,
+      fileSize: file.size,
+      file,
+    });
+  }
+
+  input.value = '';
+}
+
+function removeAttachment(index: number) {
+  attachments.value.splice(index, 1);
+}
+
+function formatFileSize(size: number) {
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 function resetEditor() {
   content.value = '';
@@ -165,6 +238,7 @@ const message = ref<MessageModel>({
   recipients: [],
   body: '',
   isDraft: true,
+    attachments: [],
 });
 
 function updateMessage() {
@@ -174,6 +248,7 @@ function updateMessage() {
     recipients: selectedRecipients.value,
     body: content.value,
     isDraft: true,
+    attachments: attachments.value,
   };
 }
 
@@ -188,6 +263,7 @@ async function send() {
     subject.value = '';
     selectedRecipients.value = [];
     resetEditor();
+    attachments.value = [];
     draftId.value = null;
     draftSaved.value = false;
   } catch (e: any) {
@@ -231,6 +307,7 @@ onMounted(() => {
       subject.value = draft.subject || '';
       selectedRecipients.value = draft.recipients || [];
       content.value = draft.body || '';
+      attachments.value = draft.attachments || [];
       draftId.value = draft.id || null;
       // Wyczyść query po załadowaniu, by nie nadpisywać przy kolejnych wejściach
       router.replace({ query: { ...route.query, draft: undefined } });
@@ -314,6 +391,24 @@ watch(
   background-color: #ccc;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.btn-attach {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.btn-attach:hover {
+  background: #f1f5f9;
 }
 
 @keyframes fadeIn {

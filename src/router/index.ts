@@ -40,6 +40,12 @@ const routes = [
         component: () => import('../views/BroadcastMessages.vue'), // View filename kept same for now or could be renamed, but inside it handles all messages
         meta: { requiresAdmin: true },
       },
+      {
+        path: '/groups',
+        name: 'Groups',
+        component: () => import('../views/Groups.vue'),
+        meta: { requiresAdmin: true },
+      },
     ],
   },
   {

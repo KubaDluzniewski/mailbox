@@ -19,4 +19,13 @@ export interface MessageModel {
   sender?: UserInfo;
   sentDate?: string | Date;
   recipientCount?: number;
+  attachments?: MessageAttachmentModel[];
+}
+
+export interface MessageAttachmentModel {
+  id?: number;
+  fileName: string;
+  contentType?: string;
+  fileSize?: number;
+  file?: File;
 }

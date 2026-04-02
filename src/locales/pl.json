@@ -60,6 +60,9 @@
     "subjectPlaceholder": "Temat",
     "messagePlaceholder": "Napisz swoją wiadomość...",
     "recipients": "Odbiorcy",
+    "attachments": "Załączniki",
+    "addAttachment": "Dodaj załącznik",
+    "noAttachments": "Brak załączników",
     "searchUsersAndGroups": "Szukaj użytkowników i grup...",
     "send": "Wyślij",
     "saveDraft": "Zapisz szkic",
@@ -134,7 +137,20 @@
   },
   "nav": {
     "users": "Użytkownicy",
-    "messageHistory": "Historia Wiadomości"
+    "messageHistory": "Historia Wiadomości",
+    "groups": "Grupy"
+  },
+  "groups": {
+    "title": "Zarządzanie grupami",
+    "search": "Szukaj grup...",
+    "empty": "Brak grup",
+    "membersCount": "Liczba członków",
+    "editTitle": "Edycja grupy",
+    "name": "Nazwa grupy",
+    "members": "Członkowie",
+    "selectMembers": "Wybierz członków",
+    "save": "Zapisz grupę",
+    "select": "Wybierz grupę, aby edytować"
   },
   "users": {
     "title": "Zarządzanie użytkownikami",

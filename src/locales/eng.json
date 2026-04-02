@@ -60,6 +60,9 @@
     "subjectPlaceholder": "Subject",
     "messagePlaceholder": "Write your message...",
     "recipients": "Recipients",
+    "attachments": "Attachments",
+    "addAttachment": "Add attachment",
+    "noAttachments": "No attachments",
     "searchUsersAndGroups": "Search users and groups...",
     "send": "Send",
     "saveDraft": "Save Draft",
@@ -134,7 +137,20 @@
   },
   "nav": {
     "users": "Users",
-    "messageHistory": "Message History"
+    "messageHistory": "Message History",
+    "groups": "Groups"
+  },
+  "groups": {
+    "title": "Group Management",
+    "search": "Search groups...",
+    "empty": "No groups found",
+    "membersCount": "Members",
+    "editTitle": "Edit Group",
+    "name": "Group name",
+    "members": "Members",
+    "selectMembers": "Select members",
+    "save": "Save group",
+    "select": "Select a group to edit"
   },
   "users": {
     "title": "User Management",

@@ -49,6 +49,12 @@
         icon="pi pi-history"
         :label="t('nav.messageHistory')"
       />
+      <NavItem
+        v-if="userStore.user?.roles?.includes(UserRole.ADMIN)"
+        to="/groups"
+        icon="pi pi-users"
+        :label="t('nav.groups')"
+      />
     </nav>
 
     <div class="mt-auto pt-6 border-t border-slate-100">

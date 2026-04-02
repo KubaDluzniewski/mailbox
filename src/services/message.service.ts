@@ -3,9 +3,31 @@ import type { MessageModel } from '../models/MessageModel';
 import { useToastStore } from '../store/toast';
 import { i18n } from '../utils/i18n';
 
+export function buildMessageFormData(messageModel: MessageModel): FormData {
+  const formData = new FormData();
+  formData.append('subject', messageModel.subject ?? '');
+  formData.append('body', messageModel.body ?? '');
+  formData.append('recipients', JSON.stringify(messageModel.recipients ?? []));
+
+  if (messageModel.id) {
+    formData.append('id', String(messageModel.id));
+  }
+
+  (messageModel.attachments ?? []).forEach((attachment) => {
+    if (attachment.file) {
+      formData.append('attachments', attachment.file, attachment.fileName || attachment.file.name);
+    }
+  });
+
+  return formData;
+}
+
 export async function sendMessage(messageModel: MessageModel): Promise<void> {
   try {
-    const response = await http.post('/message/send', messageModel);
+    const payload = buildMessageFormData(messageModel);
+    await http.post('/message/send', payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     useToastStore().push('success', i18n.global.t('compose.sentSuccess') as string);
   } catch (error) {
     useToastStore().push('error', i18n.global.t('compose.sentError') as string);
@@ -35,7 +57,10 @@ export async function getSentMessages(): Promise<MessageModel[]> {
 
 export async function saveDraft(messageModel: MessageModel): Promise<MessageModel> {
   try {
-    const response = await http.post<MessageModel>('/message/draft', messageModel);
+    const payload = buildMessageFormData(messageModel);
+    const response = await http.post<MessageModel>('/message/draft', payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     useToastStore().push('success', i18n.global.t('compose.draftSaved') as string);
     return response.data;
   } catch (error) {
@@ -46,9 +71,13 @@ export async function saveDraft(messageModel: MessageModel): Promise<MessageMode
 
 export async function updateDraft(messageModel: MessageModel): Promise<MessageModel> {
   try {
+    const payload = buildMessageFormData(messageModel);
     const response = await http.put<MessageModel>(
       `/message/draft/${messageModel.id}`,
-      messageModel
+      payload,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
     );
     useToastStore().push('success', i18n.global.t('compose.draftUpdated') as string);
     return response.data;

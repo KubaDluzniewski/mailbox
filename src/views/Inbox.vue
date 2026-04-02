@@ -148,8 +148,10 @@
                 v-tooltip.top="'Odpowiedz'"
               />
               <Button
-                icon="pi pi-archive"
+                :icon="selectedMessage?.isRead ? 'pi pi-envelope' : 'pi pi-envelope-open'"
                 class="p-button-outlined p-button-secondary p-button-sm rounded-xl hover-lift hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50 transition-all"
+                :disabled="!selectedMessage?.id"
+                @click="toggleReadState"
               />
               <Button
                 icon="pi pi-trash"
@@ -211,7 +213,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getMessages, markAsRead } from '../services/message.service';
+import { getMessages, markAsRead, markAsUnread } from '../services/message.service';
 import type { MessageModel } from '../models/MessageModel';
 import { useMessageStore } from '../store/message';
 
@@ -276,6 +278,25 @@ const handleMessageClick = async (msg: MessageModel) => {
     } catch (error) {
       console.error('Failed to mark message as read:', error);
     }
+  }
+};
+
+const toggleReadState = async () => {
+  if (!selectedMessage.value?.id) return;
+
+  try {
+    if (selectedMessage.value.isRead) {
+      await markAsUnread(selectedMessage.value.id);
+      selectedMessage.value.isRead = false;
+      selectedMessage.value.readAt = undefined;
+    } else {
+      await markAsRead(selectedMessage.value.id);
+      selectedMessage.value.isRead = true;
+      selectedMessage.value.readAt = new Date();
+    }
+    messageStore.fetchCounts();
+  } catch (error) {
+    console.error('Failed to update read status:', error);
   }
 };
 

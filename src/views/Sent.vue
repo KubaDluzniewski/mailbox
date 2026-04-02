@@ -188,6 +188,35 @@
 
         <div class="flex-1 overflow-y-auto p-10 prose prose-slate max-w-none">
           <div class="text-slate-700 leading-relaxed text-lg" v-html="selectedMessage.body"></div>
+
+          <div class="mt-8 pt-6 border-t border-slate-200" v-if="selectedMessage.recipients?.length">
+            <h3 class="text-sm font-bold text-slate-700 mb-3">Status odczytu odbiorców</h3>
+            <div class="space-y-2">
+              <div
+                v-for="recipient in selectedMessage.recipients"
+                :key="recipient.id"
+                class="flex items-center justify-between p-2 rounded-lg bg-slate-50"
+              >
+                <div class="min-w-0">
+                  <p class="text-xs font-bold text-slate-900 truncate">{{ recipient.displayName }}</p>
+                  <p class="text-[11px] text-slate-500 truncate">{{ recipient.subtitle }}</p>
+                </div>
+                <div class="text-right">
+                  <span
+                    :class="[
+                      'text-[11px] px-2 py-1 rounded-full font-semibold',
+                      recipient.isRead ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-600',
+                    ]"
+                  >
+                    {{ recipient.isRead ? 'Otwarta' : 'Nieotwarta' }}
+                  </span>
+                  <p v-if="recipient.readAt" class="text-[10px] text-slate-500 mt-1">
+                    {{ formatDate(recipient.readAt) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
 

@@ -4,6 +4,8 @@ export interface Recipient {
   displayName: string;
   subtitle?: string;
   email?: string;
+  isRead?: boolean;
+  readAt?: string | Date;
 }
 
 export interface GroupMember {
