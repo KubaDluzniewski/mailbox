@@ -154,7 +154,8 @@ async function onSubmit() {
     ) {
       toast.push('error', 'Konto nie istnieje lub nie jest aktywne.');
     } else {
-      toast.push('error', e?.message || t('errors.login-error'));
+      const serverMessage = e.response?.data?.message || e.response?.data;
+      toast.push('error', serverMessage || e?.message || t('errors.login-error'));
     }
   } finally {
     loading.value = false;
