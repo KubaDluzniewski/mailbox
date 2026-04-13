@@ -1,4 +1,5 @@
 ﻿import http from './http';
+import axios from 'axios';
 import type { MessageModel } from '../models/MessageModel';
 import { useToastStore } from '../store/toast';
 import { i18n } from '../utils/i18n';
@@ -30,8 +31,26 @@ export async function sendMessage(messageModel: MessageModel): Promise<void> {
     });
     useToastStore().push('success', i18n.global.t('compose.sentSuccess') as string);
   } catch (error) {
-    useToastStore().push('error', i18n.global.t('compose.sentError') as string);
-    throw new Error(String(i18n.global.t('compose.sentError')));
+    const fallbackMessage = i18n.global.t('compose.sentError') as string;
+    let errorMessage = fallbackMessage;
+
+    if (axios.isAxiosError(error)) {
+      const apiResponse = error.response?.data;
+      if (typeof apiResponse === 'string' && apiResponse.trim()) {
+        errorMessage = apiResponse;
+      } else if (
+        apiResponse &&
+        typeof apiResponse === 'object' &&
+        'message' in apiResponse &&
+        typeof apiResponse.message === 'string' &&
+        apiResponse.message.trim()
+      ) {
+        errorMessage = apiResponse.message;
+      }
+    }
+
+    useToastStore().push('error', errorMessage);
+    throw new Error(errorMessage);
   }
 }
 

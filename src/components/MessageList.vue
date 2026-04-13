@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { GetMessageModel } from '../models/GetMessageModel';
+import type { GetMessageModel } from '../models/GetMessageModel';
 import { useI18n } from 'vue-i18n';
 import { dateToString } from '../utils/functions';
 
