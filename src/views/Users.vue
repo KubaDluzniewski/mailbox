@@ -1,45 +1,41 @@
 <template>
-  <div class="h-full">
-    <div class="flex h-full gap-6">
-    <!-- Users List -->
-    <div
-      class="w-2/5 min-w-[400px] flex flex-col glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden"
+  <div class="h-full flex flex-col gap-4 xl:flex-row">
+    <section
+      class="w-full xl:w-[460px] xl:min-w-[460px] flex flex-col rounded-2xl border border-stone-200 bg-white overflow-hidden"
     >
-      <div
-        class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
-      >
-        <h2 class="text-xl font-black gradient-text">{{ t('users.title') }}</h2>
+      <div class="p-4 border-b border-stone-200 flex justify-between items-center shrink-0 bg-stone-50">
+        <h2 class="text-lg font-semibold tracking-tight text-zinc-900">{{ t('users.title') }}</h2>
         <div class="flex gap-2">
           <Button
             icon="pi pi-filter"
             @click="showUserFilterPanel = !showUserFilterPanel"
             :class="[
-              'p-button-sm p-button-rounded p-button-outlined hover-lift',
-              filterRole !== 'all' || filterActiveStatus !== 'all' ? 'p-button-info' : '',
+              'p-button-sm p-button-rounded p-button-text',
+              filterRole !== 'all' || filterActiveStatus !== 'all' ? 'text-zinc-900' : 'text-zinc-500',
             ]"
             v-tooltip.top="t('users.filter')"
           />
           <Button
             icon="pi pi-plus"
             :label="t('users.add')"
-            class="p-button-sm p-button-rounded hover-lift"
+            class="p-button-sm p-button-rounded"
             @click="showCreateDialog = true"
           />
         </div>
       </div>
-      <!-- Filter Panel -->
-      <div v-if="showUserFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
-        <div class="flex flex-wrap gap-4">
+
+      <div v-if="showUserFilterPanel" class="px-4 py-3 border-b border-stone-200 bg-stone-50">
+        <div class="space-y-3">
           <div>
-            <p class="text-xs font-bold text-slate-500 mb-2">{{ t('users.role') }}:</p>
-            <div class="flex gap-2">
+            <p class="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-[0.14em]">{{ t('users.role') }}</p>
+            <div class="flex flex-wrap gap-2">
               <button
                 @click="filterRole = 'all'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterRole === 'all'
-                    ? 'bg-slate-700 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('users.all') }}
@@ -47,10 +43,10 @@
               <button
                 @click="filterRole = 'ADMIN'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterRole === 'ADMIN'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('roles.admin') }}
@@ -58,10 +54,10 @@
               <button
                 @click="filterRole = 'LECTURER'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterRole === 'LECTURER'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('roles.lecturer') }}
@@ -69,26 +65,27 @@
               <button
                 @click="filterRole = 'STUDENT'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterRole === 'STUDENT'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('roles.student') }}
               </button>
             </div>
           </div>
+
           <div>
-            <p class="text-xs font-bold text-slate-500 mb-2">{{ t('users.status') }}:</p>
-            <div class="flex gap-2">
+            <p class="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-[0.14em]">{{ t('users.status') }}</p>
+            <div class="flex flex-wrap gap-2">
               <button
                 @click="filterActiveStatus = 'all'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterActiveStatus === 'all'
-                    ? 'bg-slate-700 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('users.all') }}
@@ -96,10 +93,10 @@
               <button
                 @click="filterActiveStatus = 'active'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterActiveStatus === 'active'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('users.active') }}
@@ -107,10 +104,10 @@
               <button
                 @click="filterActiveStatus = 'inactive'"
                 :class="[
-                  'px-3 py-1 text-xs font-medium rounded-full transition-all',
+                  'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
                   filterActiveStatus === 'inactive'
-                    ? 'bg-red-600 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
                 ]"
               >
                 {{ t('users.inactive') }}
@@ -119,115 +116,111 @@
           </div>
         </div>
       </div>
-      <div class="px-5 py-3 border-b border-slate-100/50 bg-white/50">
+
+      <div class="px-4 py-3 border-b border-stone-200 bg-white">
         <input
           v-model="search"
           type="text"
           :placeholder="t('users.search')"
-          class="w-full p-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+          class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-300 focus:border-zinc-600 transition-colors"
         />
       </div>
 
       <div class="flex-1 overflow-y-auto custom-scrollbar">
-        <div v-if="loading" class="p-4 space-y-4">
-          <div v-for="i in 5" :key="i" class="h-20 bg-slate-100 rounded-xl animate-pulse"></div>
+        <div v-if="loading" class="p-4 space-y-3">
+          <div v-for="i in 6" :key="i" class="h-20 bg-stone-100 rounded-lg animate-pulse"></div>
         </div>
         <div
           v-else-if="filteredUsers.length === 0"
-          class="flex flex-col items-center justify-center h-full text-slate-400 p-8 text-center"
+          class="flex flex-col items-center justify-center h-full text-zinc-400 p-8 text-center"
         >
-          <i class="pi pi-users text-5xl mb-4 opacity-20"></i>
-          <p class="font-medium text-slate-500">{{ t('users.noUsers') }}</p>
+          <i class="pi pi-users text-4xl mb-3 opacity-30"></i>
+          <p class="font-medium text-zinc-500">{{ t('users.noUsers') }}</p>
         </div>
-        <div v-else>
+        <div v-else class="stagger-in">
           <div
             v-for="user in filteredUsers"
             :key="user.id"
             @click="selectedUser = user"
             :class="[
-              'p-5 border-b border-slate-50 cursor-pointer transition-all relative group hover-lift',
-              selectedUser?.id === user.id
-                ? 'bg-gradient-to-r from-blue-50 to-purple-50/30'
-                : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50/20',
+              'p-4 border-b border-stone-200 cursor-pointer transition-colors relative',
+              selectedUser?.id === user.id ? 'bg-stone-100' : 'hover:bg-stone-50',
             ]"
           >
             <div
               v-if="selectedUser?.id === user.id"
-              class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-slate-600 to-slate-700 rounded-r-full"
+              class="absolute left-0 top-0 bottom-0 w-1 bg-zinc-900 rounded-r-full"
             ></div>
-            <div class="flex justify-between items-start mb-1">
-              <div class="flex items-center gap-2">
-                <div
+            <div class="flex justify-between items-start gap-3 mb-1">
+              <div class="flex items-center gap-2 min-w-0">
+                <span
                   :class="[
                     'w-2 h-2 rounded-full flex-shrink-0',
-                    user.isActive ? 'bg-green-600' : 'bg-red-600',
+                    user.isActive ? 'bg-emerald-600' : 'bg-red-600',
                   ]"
-                ></div>
-                <span class="text-sm font-bold text-slate-900">
+                ></span>
+                <span class="text-sm font-semibold text-zinc-900 truncate">
                   {{ user.name }} {{ user.surname }}
                 </span>
               </div>
-              <span
-                v-for="role in user.roles"
-                :key="role"
-                :class="[
-                  'text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full mr-1',
-                  getRoleBadgeClass(role),
-                ]"
-              >
-                {{ getRoleLabel(role) }}
-              </span>
+              <div class="flex flex-wrap justify-end gap-1">
+                <span
+                  v-for="role in user.roles"
+                  :key="role"
+                  :class="[
+                    'text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full',
+                    getRoleBadgeClass(role),
+                  ]"
+                >
+                  {{ getRoleLabel(role) }}
+                </span>
+              </div>
             </div>
-            <p class="text-xs text-slate-500">{{ user.email }}</p>
-            <p class="text-[10px] text-slate-400 mt-1">
-              {{ t('users.created') }}: {{ formatDate(user.createdAt) }}
-            </p>
+            <p class="text-xs text-zinc-500 truncate">{{ user.email }}</p>
+            <p class="text-[10px] text-zinc-500 mt-1">{{ t('users.created') }}: {{ formatDate(user.createdAt) }}</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- User Details / Edit Panel -->
-    <div
-      class="flex-1 glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden flex flex-col"
-    >
+    <section class="flex-1 rounded-2xl border border-stone-200 bg-white overflow-hidden flex flex-col min-h-0">
       <template v-if="loading">
-        <div class="p-8 border-b border-slate-100 bg-slate-50/30 shrink-0 animate-pulse">
-          <div class="h-9 w-56 rounded bg-slate-200 mb-6"></div>
+        <div class="p-7 border-b border-stone-200 bg-stone-50 animate-pulse">
+          <div class="h-8 w-56 rounded bg-stone-200 mb-6"></div>
           <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-full bg-slate-200"></div>
+            <div class="w-16 h-16 rounded-full bg-stone-200"></div>
             <div class="flex-1 grid grid-cols-2 gap-4">
-              <div class="h-12 rounded-lg bg-slate-200"></div>
-              <div class="h-12 rounded-lg bg-slate-200"></div>
-              <div class="h-12 rounded-lg bg-slate-200"></div>
-              <div class="h-12 rounded-lg bg-slate-200"></div>
+              <div class="h-12 rounded-lg bg-stone-200"></div>
+              <div class="h-12 rounded-lg bg-stone-200"></div>
+              <div class="h-12 rounded-lg bg-stone-200"></div>
+              <div class="h-12 rounded-lg bg-stone-200"></div>
             </div>
           </div>
         </div>
-        <div class="flex-1 p-8 space-y-3 animate-pulse bg-white/40">
-          <div class="h-4 w-2/3 rounded bg-slate-200"></div>
-          <div class="h-4 w-1/2 rounded bg-slate-200"></div>
-          <div class="h-4 w-3/4 rounded bg-slate-200"></div>
+        <div class="flex-1 p-7 space-y-3 animate-pulse bg-white">
+          <div class="h-4 w-2/3 rounded bg-stone-200"></div>
+          <div class="h-4 w-1/2 rounded bg-stone-200"></div>
+          <div class="h-4 w-3/4 rounded bg-stone-200"></div>
         </div>
       </template>
 
       <template v-else-if="selectedUser">
-        <div class="p-8 border-b border-slate-100 bg-slate-50/30 shrink-0">
-          <div class="flex justify-between items-start mb-6">
-            <h1 class="text-3xl font-black text-slate-900 leading-tight">
+        <div class="p-6 sm:p-7 border-b border-stone-200 bg-stone-50 shrink-0">
+          <div class="flex justify-between items-start gap-4 mb-5">
+            <h1 class="text-2xl sm:text-3xl font-semibold text-zinc-900 leading-tight">
               {{ selectedUser.name }} {{ selectedUser.surname }}
             </h1>
             <div class="flex gap-2">
               <Button
                 icon="pi pi-pencil"
-                class="p-button-outlined p-button-sm rounded-xl hover-lift"
+                class="p-button-outlined p-button-sm rounded-lg"
                 v-tooltip.top="t('users.edit')"
                 @click="openEditDialog"
               />
               <Button
                 :icon="selectedUser.isActive ? 'pi pi-ban' : 'pi pi-check'"
                 :class="[
-                  'p-button-outlined p-button-sm rounded-xl hover-lift',
+                  'p-button-outlined p-button-sm rounded-lg',
                   selectedUser.isActive ? 'p-button-warning' : 'p-button-success',
                 ]"
                 v-tooltip.top="selectedUser.isActive ? t('users.deactivate') : t('users.activate')"
@@ -235,7 +228,7 @@
               />
               <Button
                 icon="pi pi-trash"
-                class="p-button-outlined p-button-danger p-button-sm rounded-xl hover-lift"
+                class="p-button-outlined p-button-danger p-button-sm rounded-lg"
                 v-tooltip.top="t('users.delete')"
                 @click="confirmDelete"
               />
@@ -247,306 +240,201 @@
               :label="selectedUser.name[0] + selectedUser.surname[0]"
               shape="circle"
               size="xlarge"
-              class="bg-gradient-to-br from-slate-100 to-gray-100 text-slate-700 font-bold shadow-md hover-glow"
+              class="bg-zinc-900 text-white font-semibold"
             />
-            <div class="flex-1">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">
-                    {{ t('users.userDetails.email') }}
-                  </p>
-                  <p class="text-sm font-bold text-slate-900">{{ selectedUser.email }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">
-                    {{ t('users.userDetails.roles') }}
-                  </p>
-                  <p class="text-sm font-bold text-slate-900">
-                    {{ selectedUser.roles?.map((r) => getRoleLabel(r)).join(', ') || '-' }}
-                  </p>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">
-                    {{ t('users.userDetails.status') }}
-                  </p>
-                  <p
-                    :class="[
-                      'text-sm font-bold',
-                      selectedUser.isActive ? 'text-green-600' : 'text-red-600',
-                    ]"
-                  >
-                    {{ selectedUser.isActive ? t('users.active') : t('users.inactive') }}
-                  </p>
-                </div>
-                <div>
-                  <p class="text-xs text-slate-500 font-medium">
-                    {{ t('users.userDetails.created') }}
-                  </p>
-                  <p class="text-sm font-bold text-slate-900">
-                    {{ formatDate(selectedUser.createdAt) }}
-                  </p>
-                </div>
+            <div class="flex-1 grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-xs text-zinc-500 font-medium">{{ t('users.userDetails.email') }}</p>
+                <p class="text-sm font-semibold text-zinc-900">{{ selectedUser.email }}</p>
+              </div>
+              <div>
+                <p class="text-xs text-zinc-500 font-medium">{{ t('users.userDetails.roles') }}</p>
+                <p class="text-sm font-semibold text-zinc-900">
+                  {{ selectedUser.roles?.map((r) => getRoleLabel(r)).join(', ') || '-' }}
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-zinc-500 font-medium">{{ t('users.userDetails.status') }}</p>
+                <p :class="['text-sm font-semibold', selectedUser.isActive ? 'text-emerald-700' : 'text-red-700']">
+                  {{ selectedUser.isActive ? t('users.active') : t('users.inactive') }}
+                </p>
+              </div>
+              <div>
+                <p class="text-xs text-zinc-500 font-medium">{{ t('users.userDetails.created') }}</p>
+                <p class="text-sm font-semibold text-zinc-900">{{ formatDate(selectedUser.createdAt) }}</p>
               </div>
             </div>
           </div>
         </div>
       </template>
 
-      <div
-        v-else
-        class="flex-1 flex flex-col items-center justify-center text-slate-300 bg-slate-50/20"
-      >
-        <div
-          class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-inner mb-6"
-        >
-          <i class="pi pi-user text-5xl opacity-20"></i>
+      <div v-else class="flex-1 flex flex-col items-center justify-center text-zinc-400 bg-stone-50/70 p-8">
+        <div class="w-24 h-24 bg-white border border-stone-200 rounded-full flex items-center justify-center mb-5">
+          <i class="pi pi-user text-4xl opacity-30"></i>
         </div>
-        <p class="text-lg font-bold text-slate-400">
-          {{ t('users.selectUser') }}
-        </p>
+        <p class="text-base sm:text-lg font-semibold text-zinc-500 text-center">{{ t('users.selectUser') }}</p>
       </div>
-    </div>
-    </div>
+    </section>
 
-    <!-- Create User Dialog -->
     <Dialog
       :visible="showCreateDialog"
       @update:visible="showCreateDialog = $event"
-    :header="t('users.dialog.createTitle')"
-    :modal="true"
-    :style="{ width: '500px' }"
-    class="p-fluid"
+      :header="t('users.dialog.createTitle')"
+      :modal="true"
+      :style="{ width: '500px' }"
+      class="p-fluid"
     >
-    <div class="space-y-4">
-      <div>
-        <label for="name" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.name')
-        }}</label>
-        <InputText id="name" v-model="newUser.name" :placeholder="t('users.dialog.name')" />
+      <div class="space-y-4">
+        <div>
+          <label for="name" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.name') }}</label>
+          <InputText id="name" v-model="newUser.name" :placeholder="t('users.dialog.name')" />
+        </div>
+        <div>
+          <label for="surname" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.surname') }}</label>
+          <InputText id="surname" v-model="newUser.surname" :placeholder="t('users.dialog.surname')" />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.userDetails.email') }}</label>
+          <InputText id="email" v-model="newUser.email" type="email" placeholder="Email" />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('password') }}</label>
+          <Password id="password" v-model="newUser.password" :placeholder="t('password')" :feedback="false" toggleMask />
+        </div>
+        <div>
+          <label for="roles" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.roles') }}</label>
+          <MultiSelect
+            id="roles"
+            v-model="newUser.roles"
+            :options="roleOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="t('users.dialog.roles')"
+            display="chip"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <InputSwitch id="isActive" v-model="newUser.isActive" />
+          <label for="isActive" class="text-sm font-medium text-zinc-700">{{ t('users.dialog.isActive') }}</label>
+        </div>
       </div>
-      <div>
-        <label for="surname" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.surname')
-        }}</label>
-        <InputText
-          id="surname"
-          v-model="newUser.surname"
-          :placeholder="t('users.dialog.surname')"
-        />
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.userDetails.email')
-        }}</label>
-        <InputText id="email" v-model="newUser.email" type="email" placeholder="Email" />
-      </div>
-      <div>
-        <label for="password" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('password')
-        }}</label>
-        <Password
-          id="password"
-          v-model="newUser.password"
-          :placeholder="t('password')"
-          :feedback="false"
-          toggleMask
-        />
-      </div>
-      <div>
-        <label for="roles" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.roles')
-        }}</label>
-        <MultiSelect
-          id="roles"
-          v-model="newUser.roles"
-          :options="roleOptions"
-          optionLabel="label"
-          optionValue="value"
-          :placeholder="t('users.dialog.roles')"
-          display="chip"
-        />
-      </div>
-      <div class="flex items-center gap-2">
-        <InputSwitch id="isActive" v-model="newUser.isActive" />
-        <label for="isActive" class="text-sm font-medium text-slate-700">{{
-          t('users.dialog.isActive')
-        }}</label>
-      </div>
-    </div>
-    <template #footer>
-      <Button
-        :label="t('users.dialog.cancel')"
-        icon="pi pi-times"
-        @click="showCreateDialog = false"
-        class="p-button-text"
-      />
-      <Button
-        :label="t('users.dialog.create')"
-        icon="pi pi-check"
-        @click="handleCreateUser"
-        :loading="creating"
-      />
-    </template>
+      <template #footer>
+        <Button :label="t('users.dialog.cancel')" icon="pi pi-times" @click="showCreateDialog = false" class="p-button-text" />
+        <Button :label="t('users.dialog.create')" icon="pi pi-check" @click="handleCreateUser" :loading="creating" />
+      </template>
     </Dialog>
 
-    <!-- Edit User Dialog -->
     <Dialog
       :visible="showEditDialog"
       @update:visible="showEditDialog = $event"
-    :header="t('users.dialog.editTitle')"
-    :modal="true"
-    :style="{ width: '500px' }"
-    class="p-fluid"
+      :header="t('users.dialog.editTitle')"
+      :modal="true"
+      :style="{ width: '500px' }"
+      class="p-fluid"
     >
-    <div class="space-y-4" v-if="editUser">
-      <div>
-        <label for="edit-name" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.name')
-        }}</label>
-        <InputText id="edit-name" v-model="editUser.name" :placeholder="t('users.dialog.name')" />
+      <div class="space-y-4" v-if="editUser">
+        <div>
+          <label for="edit-name" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.name') }}</label>
+          <InputText id="edit-name" v-model="editUser.name" :placeholder="t('users.dialog.name')" />
+        </div>
+        <div>
+          <label for="edit-surname" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.surname') }}</label>
+          <InputText id="edit-surname" v-model="editUser.surname" :placeholder="t('users.dialog.surname')" />
+        </div>
+        <div>
+          <label for="edit-email" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.userDetails.email') }}</label>
+          <InputText id="edit-email" v-model="editUser.email" type="email" placeholder="Email" />
+        </div>
+        <div>
+          <label for="edit-roles" class="block text-sm font-medium text-zinc-700 mb-1">{{ t('users.dialog.roles') }}</label>
+          <MultiSelect
+            id="edit-roles"
+            v-model="editUser.roles"
+            :options="roleOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="t('users.dialog.roles')"
+            display="chip"
+          />
+        </div>
+        <div class="flex items-center gap-2">
+          <InputSwitch id="edit-isActive" v-model="editUser.isActive" />
+          <label for="edit-isActive" class="text-sm font-medium text-zinc-700">{{ t('users.dialog.isActive') }}</label>
+        </div>
       </div>
-      <div>
-        <label for="edit-surname" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.surname')
-        }}</label>
-        <InputText
-          id="edit-surname"
-          v-model="editUser.surname"
-          :placeholder="t('users.dialog.surname')"
-        />
-      </div>
-      <div>
-        <label for="edit-email" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.userDetails.email')
-        }}</label>
-        <InputText id="edit-email" v-model="editUser.email" type="email" placeholder="Email" />
-      </div>
-      <div>
-        <label for="edit-roles" class="block text-sm font-medium text-slate-700 mb-1">{{
-          t('users.dialog.roles')
-        }}</label>
-        <MultiSelect
-          id="edit-roles"
-          v-model="editUser.roles"
-          :options="roleOptions"
-          optionLabel="label"
-          optionValue="value"
-          :placeholder="t('users.dialog.roles')"
-          display="chip"
-        />
-      </div>
-      <div class="flex items-center gap-2">
-        <InputSwitch id="edit-isActive" v-model="editUser.isActive" />
-        <label for="edit-isActive" class="text-sm font-medium text-slate-700">{{
-          t('users.dialog.isActive')
-        }}</label>
-      </div>
-    </div>
-    <template #footer>
-      <Button
-        :label="t('users.dialog.cancel')"
-        icon="pi pi-times"
-        @click="showEditDialog = false"
-        class="p-button-text"
-      />
-      <Button
-        :label="t('users.dialog.save')"
-        icon="pi pi-check"
-        @click="handleUpdateUser"
-        :loading="updating"
-      />
-    </template>
+      <template #footer>
+        <Button :label="t('users.dialog.cancel')" icon="pi pi-times" @click="showEditDialog = false" class="p-button-text" />
+        <Button :label="t('users.dialog.save')" icon="pi pi-check" @click="handleUpdateUser" :loading="updating" />
+      </template>
     </Dialog>
 
-    <!-- Delete Confirmation Dialog -->
     <Dialog
       :visible="showDeleteDialog"
       @update:visible="showDeleteDialog = $event"
-    :header="t('users.dialog.deleteTitle')"
-    :modal="true"
-    :style="{ width: '450px' }"
+      :header="t('users.dialog.deleteTitle')"
+      :modal="true"
+      :style="{ width: '450px' }"
     >
-    <div class="flex items-start gap-4">
-      <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
-      <div>
-        <p class="text-lg font-bold mb-2">{{ t('users.dialog.deleteBody') }}</p>
-        <p class="text-slate-600" v-if="userToDelete">
-          <strong>{{ userToDelete.name }} {{ userToDelete.surname }}</strong>
-          <br />
-          {{ userToDelete.email }}
-        </p>
-        <p class="text-sm text-red-600 mt-3">
-          <i class="pi pi-info-circle mr-1"></i>
-          {{ t('users.dialog.irreversible') }}
-        </p>
+      <div class="flex items-start gap-4">
+        <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
+        <div>
+          <p class="text-lg font-semibold mb-2">{{ t('users.dialog.deleteBody') }}</p>
+          <p class="text-zinc-600" v-if="userToDelete">
+            <strong>{{ userToDelete.name }} {{ userToDelete.surname }}</strong>
+            <br />
+            {{ userToDelete.email }}
+          </p>
+          <p class="text-sm text-red-600 mt-3">
+            <i class="pi pi-info-circle mr-1"></i>
+            {{ t('users.dialog.irreversible') }}
+          </p>
+        </div>
       </div>
-    </div>
-    <template #footer>
-      <Button
-        :label="t('users.dialog.cancel')"
-        icon="pi pi-times"
-        @click="showDeleteDialog = false"
-        class="p-button-text"
-      />
-      <Button
-        :label="t('users.delete')"
-        icon="pi pi-trash"
-        @click="handleDeleteUser"
-        :loading="deleting"
-        class="p-button-danger"
-      />
-    </template>
+      <template #footer>
+        <Button :label="t('users.dialog.cancel')" icon="pi pi-times" @click="showDeleteDialog = false" class="p-button-text" />
+        <Button :label="t('users.delete')" icon="pi pi-trash" @click="handleDeleteUser" :loading="deleting" class="p-button-danger" />
+      </template>
     </Dialog>
 
-    <!-- Toggle Status Confirmation Dialog -->
     <Dialog
       :visible="showToggleStatusDialog"
       @update:visible="showToggleStatusDialog = $event"
-    :header="t('users.dialog.toggleTitle')"
-    :modal="true"
-    :style="{ width: '450px' }"
+      :header="t('users.dialog.toggleTitle')"
+      :modal="true"
+      :style="{ width: '450px' }"
     >
-    <div class="flex items-start gap-4">
-      <i
-        :class="[
-          'pi text-4xl',
-          userToToggle?.isActive ? 'pi-ban text-orange-500' : 'pi-check-circle text-green-500',
-        ]"
-      ></i>
-      <div>
-        <p class="text-lg font-bold mb-2">
-          {{
-            userToToggle?.isActive
-              ? t('users.dialog.toggleDeactivate')
-              : t('users.dialog.toggleActivate')
-          }}
-        </p>
-        <p class="text-slate-600" v-if="userToToggle">
-          <strong>{{ userToToggle.name }} {{ userToToggle.surname }}</strong>
-          <br />
-          {{ userToToggle.email }}
-        </p>
-        <p class="text-sm text-slate-500 mt-3" v-if="userToToggle?.isActive">
-          <i class="pi pi-info-circle mr-1"></i>
-          {{ t('users.dialog.toggleInfo') }}
-        </p>
+      <div class="flex items-start gap-4">
+        <i
+          :class="[
+            'pi text-4xl',
+            userToToggle?.isActive ? 'pi-ban text-orange-500' : 'pi-check-circle text-green-500',
+          ]"
+        ></i>
+        <div>
+          <p class="text-lg font-semibold mb-2">
+            {{ userToToggle?.isActive ? t('users.dialog.toggleDeactivate') : t('users.dialog.toggleActivate') }}
+          </p>
+          <p class="text-zinc-600" v-if="userToToggle">
+            <strong>{{ userToToggle.name }} {{ userToToggle.surname }}</strong>
+            <br />
+            {{ userToToggle.email }}
+          </p>
+          <p class="text-sm text-zinc-500 mt-3" v-if="userToToggle?.isActive">
+            <i class="pi pi-info-circle mr-1"></i>
+            {{ t('users.dialog.toggleInfo') }}
+          </p>
+        </div>
       </div>
-    </div>
-    <template #footer>
-      <Button
-        :label="t('users.dialog.cancel')"
-        icon="pi pi-times"
-        @click="showToggleStatusDialog = false"
-        class="p-button-text"
-      />
-      <Button
-        :label="userToToggle?.isActive ? t('users.deactivate') : t('users.activate')"
-        :icon="userToToggle?.isActive ? 'pi pi-ban' : 'pi pi-check'"
-        @click="handleToggleStatus"
-        :loading="toggling"
-        :class="userToToggle?.isActive ? 'p-button-warning' : 'p-button-success'"
-      />
-    </template>
+      <template #footer>
+        <Button :label="t('users.dialog.cancel')" icon="pi pi-times" @click="showToggleStatusDialog = false" class="p-button-text" />
+        <Button
+          :label="userToToggle?.isActive ? t('users.deactivate') : t('users.activate')"
+          :icon="userToToggle?.isActive ? 'pi pi-ban' : 'pi pi-check'"
+          @click="handleToggleStatus"
+          :loading="toggling"
+          :class="userToToggle?.isActive ? 'p-button-warning' : 'p-button-success'"
+        />
+      </template>
     </Dialog>
   </div>
 </template>
