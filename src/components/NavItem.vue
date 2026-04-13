@@ -3,29 +3,29 @@
     <a :href="href" @click="navigate" class="no-underline block">
       <div
         :class="[
-          'flex items-center justify-between px-4 py-3 rounded-xl transition-all font-semibold relative overflow-hidden group',
+          'flex items-center justify-between px-3 py-2.5 rounded-lg border transition-colors font-medium',
           (exact ? isExactActive : isActive)
-            ? 'bg-gradient-to-r from-slate-100 to-gray-100 text-slate-800 shadow-sm'
-            : 'text-slate-600 hover:bg-gradient-to-r hover:from-slate-50 hover:to-gray-50 hover:text-slate-900 hover-lift',
+            ? 'bg-stone-100 border-stone-300 text-zinc-900'
+            : 'border-transparent text-zinc-600 hover:bg-stone-100 hover:border-stone-200 hover:text-zinc-900',
         ]"
       >
-        <!-- Active indicator -->
-        <div
-          v-if="exact ? isExactActive : isActive"
-          class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-slate-600 to-slate-700 rounded-r-full"
-        ></div>
-
-        <div class="flex items-center gap-3 relative z-10">
-          <i :class="[icon, 'text-lg transition-transform group-hover:scale-110']"></i>
-          <span>{{ label }}</span>
+        <div class="flex items-center gap-3 min-w-0">
+          <span
+            :class="[
+              'h-1.5 w-1.5 rounded-full',
+              (exact ? isExactActive : isActive) ? 'bg-zinc-900' : 'bg-transparent',
+            ]"
+          ></span>
+          <i :class="[icon, 'text-base']"></i>
+          <span class="truncate">{{ label }}</span>
         </div>
         <span
           v-if="count"
           :class="[
-            'text-xs px-2 py-0.5 rounded-full font-bold transition-all',
+            'text-[11px] px-2 py-0.5 rounded-full font-semibold',
             (exact ? isExactActive : isActive)
-              ? 'bg-gradient-to-r from-blue-200 to-purple-200 text-blue-800'
-              : 'bg-slate-100 text-slate-500 group-hover:bg-blue-100 group-hover:text-blue-700',
+              ? 'bg-zinc-900 text-white'
+              : 'bg-stone-200 text-zinc-600',
           ]"
           >{{ count }}</span
         >
@@ -35,7 +35,4 @@
 </template>
 <script setup lang="ts">
 defineProps<{ to: string; icon: string; label: string; count?: number; exact?: boolean }>();
-</script>
-<script lang="ts">
-export default {};
 </script>

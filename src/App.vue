@@ -1,12 +1,17 @@
 <template>
-  <div class="min-h-screen text-slate-800 relative overflow-hidden">
-    <!-- Subtle gradient background -->
-    <div class="fixed inset-0 bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 -z-10"></div>
+  <div class="min-h-screen text-zinc-900 relative overflow-hidden">
+    <div class="fixed inset-0 -z-20 bg-stone-100"></div>
     <div
-      class="fixed inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(148,163,184,0.08),transparent_50%)] -z-10"
+      class="fixed inset-0 -z-10 opacity-30"
+      style="
+        background-image:
+          linear-gradient(rgba(24, 24, 27, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(24, 24, 27, 0.05) 1px, transparent 1px);
+        background-size: 34px 34px;
+      "
     ></div>
     <div
-      class="fixed inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(100,116,139,0.05),transparent_50%)] -z-10"
+      class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.88),transparent_58%)]"
     ></div>
 
     <router-view />
@@ -21,7 +26,7 @@ import { watch } from 'vue';
 import Toasts from './components/Toasts.vue';
 
 const appStore = useAppStore();
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 
 watch(
   () => appStore.lang,

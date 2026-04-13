@@ -1,76 +1,92 @@
 <template>
-  <div class="flex h-full gap-6">
-    <!-- Left sidebar: User Profile Card -->
+  <div class="flex h-full flex-col gap-4 xl:flex-row relative">
     <div
-      class="w-1/3 min-w-[320px] glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden flex flex-col"
+      v-if="settingsLoading"
+      class="absolute inset-0 z-20 pointer-events-none bg-stone-100/60 backdrop-blur-[1px]"
     >
-      <!-- Profile Header -->
-      <div
-        class="p-8 bg-gradient-to-br from-slate-700 to-slate-800 text-center relative overflow-hidden"
-      >
+      <div class="h-full grid grid-cols-1 xl:grid-cols-[minmax(360px,360px)_1fr] gap-4 p-1">
+        <div class="rounded-2xl border border-stone-200 bg-white p-6 animate-pulse flex flex-col">
+          <div class="mx-auto w-20 h-20 rounded-full bg-stone-200 mb-4"></div>
+          <div class="h-6 w-2/3 mx-auto rounded bg-stone-200 mb-2"></div>
+          <div class="h-4 w-1/2 mx-auto rounded bg-stone-200 mb-5"></div>
+          <div class="space-y-3 mt-4">
+            <div class="h-14 rounded-xl bg-stone-100"></div>
+            <div class="h-14 rounded-xl bg-stone-100"></div>
+            <div class="h-14 rounded-xl bg-stone-100"></div>
+          </div>
+          <div class="mt-auto h-10 rounded-xl bg-stone-100"></div>
+        </div>
+
+        <div class="rounded-2xl border border-stone-200 bg-white p-6 animate-pulse space-y-4">
+          <div class="h-8 w-48 rounded bg-stone-200"></div>
+          <div class="h-4 w-72 rounded bg-stone-200"></div>
+          <div class="h-24 rounded-2xl bg-stone-100"></div>
+          <div class="h-24 rounded-2xl bg-stone-100"></div>
+          <div class="h-28 rounded-2xl bg-stone-100"></div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-full xl:w-[360px] xl:min-w-[360px] rounded-2xl border border-stone-200 bg-white overflow-hidden flex flex-col"
+    >
+      <div class="p-6 border-b border-stone-200 bg-stone-50 text-center">
         <div
-          class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-        ></div>
-        <div class="relative z-10">
-          <div
-            class="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl ring-4 ring-white/20"
-          >
-            <span class="text-4xl font-bold text-white">{{ userInitials }}</span>
-          </div>
-          <h2 class="text-2xl font-bold text-white mb-1">{{ userName }}</h2>
-          <p class="text-slate-300 text-sm">{{ userStore.user?.email }}</p>
-          <div
-            class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider"
-            :class="roleBadgeClass"
-          >
-            <i :class="roleIcon"></i>
-            {{ getRoleTranslation() }}
-          </div>
+          class="w-20 h-20 rounded-full bg-zinc-900 flex items-center justify-center mx-auto mb-4"
+        >
+          <span class="text-3xl font-semibold text-white">{{ userInitials }}</span>
+        </div>
+        <h2 class="text-2xl font-semibold text-zinc-900 mb-1">{{ userName }}</h2>
+        <p class="text-zinc-500 text-sm">{{ userStore.user?.email }}</p>
+        <div
+          class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-[0.15em]"
+          :class="roleBadgeClass"
+        >
+          <i :class="roleIcon"></i>
+          {{ getRoleTranslation() }}
         </div>
       </div>
 
-      <!-- Quick Stats -->
-      <div class="p-6 border-b border-slate-100/50 bg-white/50">
-        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+      <div class="p-5 border-b border-stone-200">
+        <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-[0.14em] mb-4">
           Informacje o koncie
         </h3>
-        <div class="space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <i class="pi pi-envelope text-blue-600"></i>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+            <div class="w-9 h-9 rounded-lg bg-stone-200 flex items-center justify-center">
+              <i class="pi pi-envelope text-zinc-700"></i>
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-xs text-slate-500">Adres e-mail</p>
-              <p class="text-sm font-semibold text-slate-800 truncate">
+              <p class="text-xs text-zinc-500">Adres e-mail</p>
+              <p class="text-sm font-semibold text-zinc-800 truncate">
                 {{ userStore.user?.email }}
               </p>
             </div>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-              <i class="pi pi-check-circle text-green-600"></i>
+          <div class="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <i class="pi pi-check-circle text-emerald-700"></i>
             </div>
             <div class="flex-1">
-              <p class="text-xs text-slate-500">Status konta</p>
-              <p class="text-sm font-semibold text-green-600">Aktywne</p>
+              <p class="text-xs text-zinc-500">Status konta</p>
+              <p class="text-sm font-semibold text-emerald-700">Aktywne</p>
             </div>
           </div>
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-              <i class="pi pi-shield text-purple-600"></i>
+          <div class="flex items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-3">
+            <div class="w-9 h-9 rounded-lg bg-stone-200 flex items-center justify-center">
+              <i class="pi pi-shield text-zinc-700"></i>
             </div>
             <div class="flex-1">
-              <p class="text-xs text-slate-500">Uprawnienia</p>
-              <p class="text-sm font-semibold text-slate-800">{{ getRoleTranslation() }}</p>
+              <p class="text-xs text-zinc-500">Uprawnienia</p>
+              <p class="text-sm font-semibold text-zinc-800">{{ getRoleTranslation() }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Danger Zone -->
-      <div class="p-6 mt-auto">
+      <div class="p-5 mt-auto">
         <button
-          class="w-full py-3 px-4 rounded-xl text-red-600 hover:bg-red-50 transition-all font-medium flex items-center justify-center gap-2"
+          class="w-full py-2.5 px-4 rounded-lg text-red-700 hover:bg-red-50 transition-colors font-medium flex items-center justify-center gap-2"
           @click="logout"
         >
           <i class="pi pi-sign-out"></i>
@@ -79,35 +95,32 @@
       </div>
     </div>
 
-    <!-- Right side: Settings Cards -->
-    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
-      <header class="mb-8">
-        <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ t('main.settings') }}</h1>
-        <p class="text-slate-500 mt-1">Zarządzaj swoim kontem i preferencjami.</p>
+    <div class="flex-1 overflow-y-auto custom-scrollbar pr-1">
+      <header class="mb-5 rounded-2xl border border-stone-200 bg-white p-5 sm:p-6">
+        <p class="text-[11px] uppercase tracking-[0.16em] text-zinc-500">Profile</p>
+        <h1 class="text-2xl sm:text-3xl font-semibold text-zinc-900 leading-tight">
+          {{ t('main.settings') }}
+        </h1>
+        <p class="text-zinc-500 mt-1">Zarządzaj swoim kontem i preferencjami.</p>
       </header>
 
-      <div class="space-y-6">
-        <!-- Email Settings -->
+      <div class="space-y-4">
         <section
-          class="glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          class="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6"
         >
-          <div class="p-6 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg"
-              >
-                <i class="pi pi-at text-white text-xl"></i>
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-stone-200 flex items-center justify-center">
+                <i class="pi pi-at text-zinc-700 text-lg"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">
-                  {{ t('settingsPage.email.title') }}
-                </h3>
-                <p class="text-slate-500 text-sm">{{ userStore.user?.email }}</p>
+                <h3 class="font-semibold text-zinc-800 text-lg">{{ t('settingsPage.email.title') }}</h3>
+                <p class="text-zinc-500 text-sm">{{ userStore.user?.email }}</p>
               </div>
             </div>
             <button
               @click="showEmailModal = true"
-              class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all flex items-center gap-2"
+              class="px-4 py-2 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-zinc-700 font-semibold transition-colors flex items-center gap-2"
             >
               <i class="pi pi-pencil text-sm"></i>
               {{ t('settingsPage.email.change') }}
@@ -115,29 +128,24 @@
           </div>
         </section>
 
-        <!-- Password Settings -->
         <section
-          class="glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          class="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6"
         >
-          <div class="p-6 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg"
-              >
-                <i class="pi pi-lock text-white text-xl"></i>
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-stone-200 flex items-center justify-center">
+                <i class="pi pi-lock text-zinc-700 text-lg"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">
-                  {{ t('settingsPage.password.title') }}
-                </h3>
-                <p class="text-slate-500 text-sm">
+                <h3 class="font-semibold text-zinc-800 text-lg">{{ t('settingsPage.password.title') }}</h3>
+                <p class="text-zinc-500 text-sm">
                   {{ t('settingsPage.password.changed') }}: {{ passwordChangedAtFormatted }}
                 </p>
               </div>
             </div>
             <button
               @click="showPasswordModal = true"
-              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+              class="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold transition-colors flex items-center gap-2"
             >
               <i class="pi pi-key text-sm"></i>
               {{ t('settings.changePassword.button') }}
@@ -145,34 +153,29 @@
           </div>
         </section>
 
-        <!-- Language Settings -->
         <section
-          class="glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          class="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6"
         >
-          <div class="p-6">
-            <div class="flex items-center gap-4 mb-6">
-              <div
-                class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg"
-              >
-                <i class="pi pi-globe text-white text-xl"></i>
+          <div>
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-11 h-11 rounded-xl bg-stone-200 flex items-center justify-center">
+                <i class="pi pi-globe text-zinc-700 text-lg"></i>
               </div>
               <div>
-                <h3 class="font-bold text-slate-800 text-lg">
-                  {{ t('settingsPage.language.title') }}
-                </h3>
-                <p class="text-slate-500 text-sm">
+                <h3 class="font-semibold text-zinc-800 text-lg">{{ t('settingsPage.language.title') }}</h3>
+                <p class="text-zinc-500 text-sm">
                   {{ t('settingsPage.language.description') }}
                 </p>
               </div>
             </div>
-            <div class="flex gap-3">
+            <div class="grid gap-3 sm:grid-cols-2">
               <button
                 @click="setLanguage('pl')"
                 :class="[
-                  'flex-1 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2',
+                  'py-2.5 px-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 border',
                   locale === 'pl'
-                    ? 'bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow-lg'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-700 border-stone-300 hover:bg-stone-50',
                 ]"
               >
                 🇵🇱 Polski
@@ -180,10 +183,10 @@
               <button
                 @click="setLanguage('eng')"
                 :class="[
-                  'flex-1 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2',
+                  'py-2.5 px-4 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 border',
                   locale === 'eng'
-                    ? 'bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow-lg'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-700 border-stone-300 hover:bg-stone-50',
                 ]"
               >
                 🇬🇧 English
@@ -194,7 +197,6 @@
       </div>
     </div>
 
-    <!-- Modals -->
     <BaseModal
       :visible="showEmailModal"
       :title="t('settings.changeEmail.title')"
@@ -202,17 +204,17 @@
     >
       <div class="flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+          <label class="block text-sm font-semibold text-zinc-700 mb-2">{{
             t('settings.changeEmail.newEmail')
           }}</label>
           <InputText
             v-model="newEmail"
             placeholder="nowy@email.pl"
-            class="w-full p-3 border-slate-200 rounded-xl"
+            class="w-full p-3 border-stone-300 rounded-lg"
           />
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+          <label class="block text-sm font-semibold text-zinc-700 mb-2">{{
             t('settings.changeEmail.currentPassword')
           }}</label>
           <Password
@@ -220,19 +222,19 @@
             toggleMask
             :feedback="false"
             class="w-full"
-            inputClass="w-full p-3 border-slate-200 rounded-xl"
+            inputClass="w-full p-3 border-stone-300 rounded-lg"
           />
         </div>
         <div class="flex justify-end gap-3 mt-2">
           <button
             @click="showEmailModal = false"
-            class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all"
+            class="px-4 py-2 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-zinc-700 font-semibold transition-colors"
           >
             {{ t('users.dialog.cancel') }}
           </button>
           <button
             @click="changeEmail"
-            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all shadow-lg"
+            class="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold transition-colors"
           >
             {{ t('settings.changeEmail.button') }}
           </button>
@@ -247,7 +249,7 @@
     >
       <div class="flex flex-col gap-4">
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+          <label class="block text-sm font-semibold text-zinc-700 mb-2">{{
             t('settings.changePassword.oldPassword')
           }}</label>
           <Password
@@ -255,11 +257,11 @@
             toggleMask
             :feedback="false"
             class="w-full"
-            inputClass="w-full p-3 border-slate-200 rounded-xl"
+            inputClass="w-full p-3 border-stone-300 rounded-lg"
           />
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">{{
+          <label class="block text-sm font-semibold text-zinc-700 mb-2">{{
             t('settings.changePassword.newPassword')
           }}</label>
           <Password
@@ -270,19 +272,19 @@
             :mediumLabel="t('passwordStrength.medium')"
             :strongLabel="t('passwordStrength.strong')"
             class="w-full"
-            inputClass="w-full p-3 border-slate-200 rounded-xl"
+            inputClass="w-full p-3 border-stone-300 rounded-lg"
           />
         </div>
         <div class="flex justify-end gap-3 mt-2">
           <button
             @click="showPasswordModal = false"
-            class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition-all"
+            class="px-4 py-2 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-zinc-700 font-semibold transition-colors"
           >
             {{ t('users.dialog.cancel') }}
           </button>
           <button
             @click="changePassword"
-            class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold transition-all shadow-lg"
+            class="px-4 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold transition-colors"
           >
             {{ t('settings.changePassword.button') }}
           </button>
@@ -299,7 +301,6 @@ import { useRouter } from 'vue-router';
 import Password from 'primevue/password';
 import InputText from 'primevue/inputtext';
 
-import BaseModal from '../components/BaseModal.vue';
 import { useUserStore } from '../store/user';
 import { useToastStore } from '../store/toast';
 import { useAppStore } from '../store/app';
@@ -319,6 +320,7 @@ const appStore = useAppStore();
 const showEmailModal = ref(false);
 const showPasswordModal = ref(false);
 const newEmail = ref('');
+const settingsLoading = ref(true);
 const modalPassword = reactive({
   old: '',
   new: '',
@@ -328,7 +330,13 @@ const modalPassword = reactive({
 const passwordChangedAt = ref<Date | null>(null);
 
 onMounted(async () => {
-  passwordChangedAt.value = await getPasswordChangedAt();
+  try {
+    passwordChangedAt.value = await getPasswordChangedAt();
+  } catch (error) {
+    console.error('Failed to load password changed date:', error);
+  } finally {
+    settingsLoading.value = false;
+  }
 });
 
 const passwordChangedAtFormatted = computed(() => {
@@ -357,9 +365,9 @@ const userName = computed(() => {
 const roleBadgeClass = computed(() => {
   const roles = userStore.user?.roles || [];
   // Use highest priority role for badge
-  if (roles.includes(UserRole.ADMIN)) return 'bg-purple-500/20 text-purple-200';
-  if (roles.includes(UserRole.LECTURER)) return 'bg-blue-500/20 text-blue-200';
-  return 'bg-green-500/20 text-green-200';
+  if (roles.includes(UserRole.ADMIN)) return 'bg-zinc-900 text-white';
+  if (roles.includes(UserRole.LECTURER)) return 'bg-stone-200 text-zinc-800';
+  return 'bg-emerald-100 text-emerald-700';
 });
 
 const roleIcon = computed(() => {
@@ -424,23 +432,16 @@ const setLanguage = (lang: string) => {
 </script>
 
 <style scoped>
-/* Glass effect */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-}
-
-/* Input styles */
 :deep(.p-inputtext) {
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  border: 1px solid #d6d3d1;
   background: #fff;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 :deep(.p-inputtext:focus) {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3f3f46;
+  box-shadow: 0 0 0 3px rgba(113, 113, 122, 0.15);
   outline: none;
 }
 

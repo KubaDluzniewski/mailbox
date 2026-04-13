@@ -1,5 +1,6 @@
 <template>
-  <div class="flex h-full gap-6">
+  <div class="h-full">
+    <div class="flex h-full gap-6">
     <!-- Users List -->
     <div
       class="w-2/5 min-w-[400px] flex flex-col glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden"
@@ -190,7 +191,27 @@
     <div
       class="flex-1 glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden flex flex-col"
     >
-      <template v-if="selectedUser">
+      <template v-if="loading">
+        <div class="p-8 border-b border-slate-100 bg-slate-50/30 shrink-0 animate-pulse">
+          <div class="h-9 w-56 rounded bg-slate-200 mb-6"></div>
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-slate-200"></div>
+            <div class="flex-1 grid grid-cols-2 gap-4">
+              <div class="h-12 rounded-lg bg-slate-200"></div>
+              <div class="h-12 rounded-lg bg-slate-200"></div>
+              <div class="h-12 rounded-lg bg-slate-200"></div>
+              <div class="h-12 rounded-lg bg-slate-200"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 p-8 space-y-3 animate-pulse bg-white/40">
+          <div class="h-4 w-2/3 rounded bg-slate-200"></div>
+          <div class="h-4 w-1/2 rounded bg-slate-200"></div>
+          <div class="h-4 w-3/4 rounded bg-slate-200"></div>
+        </div>
+      </template>
+
+      <template v-else-if="selectedUser">
         <div class="p-8 border-b border-slate-100 bg-slate-50/30 shrink-0">
           <div class="flex justify-between items-start mb-6">
             <h1 class="text-3xl font-black text-slate-900 leading-tight">
@@ -285,16 +306,17 @@
         </p>
       </div>
     </div>
-  </div>
+    </div>
 
-  <!-- Create User Dialog -->
-  <Dialog
-    v-model:visible="showCreateDialog"
+    <!-- Create User Dialog -->
+    <Dialog
+      :visible="showCreateDialog"
+      @update:visible="showCreateDialog = $event"
     :header="t('users.dialog.createTitle')"
     :modal="true"
     :style="{ width: '500px' }"
     class="p-fluid"
-  >
+    >
     <div class="space-y-4">
       <div>
         <label for="name" class="block text-sm font-medium text-slate-700 mb-1">{{
@@ -365,16 +387,17 @@
         :loading="creating"
       />
     </template>
-  </Dialog>
+    </Dialog>
 
-  <!-- Edit User Dialog -->
-  <Dialog
-    v-model:visible="showEditDialog"
+    <!-- Edit User Dialog -->
+    <Dialog
+      :visible="showEditDialog"
+      @update:visible="showEditDialog = $event"
     :header="t('users.dialog.editTitle')"
     :modal="true"
     :style="{ width: '500px' }"
     class="p-fluid"
-  >
+    >
     <div class="space-y-4" v-if="editUser">
       <div>
         <label for="edit-name" class="block text-sm font-medium text-slate-700 mb-1">{{
@@ -433,15 +456,16 @@
         :loading="updating"
       />
     </template>
-  </Dialog>
+    </Dialog>
 
-  <!-- Delete Confirmation Dialog -->
-  <Dialog
-    v-model:visible="showDeleteDialog"
+    <!-- Delete Confirmation Dialog -->
+    <Dialog
+      :visible="showDeleteDialog"
+      @update:visible="showDeleteDialog = $event"
     :header="t('users.dialog.deleteTitle')"
     :modal="true"
     :style="{ width: '450px' }"
-  >
+    >
     <div class="flex items-start gap-4">
       <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
       <div>
@@ -472,15 +496,16 @@
         class="p-button-danger"
       />
     </template>
-  </Dialog>
+    </Dialog>
 
-  <!-- Toggle Status Confirmation Dialog -->
-  <Dialog
-    v-model:visible="showToggleStatusDialog"
+    <!-- Toggle Status Confirmation Dialog -->
+    <Dialog
+      :visible="showToggleStatusDialog"
+      @update:visible="showToggleStatusDialog = $event"
     :header="t('users.dialog.toggleTitle')"
     :modal="true"
     :style="{ width: '450px' }"
-  >
+    >
     <div class="flex items-start gap-4">
       <i
         :class="[
@@ -522,7 +547,8 @@
         :class="userToToggle?.isActive ? 'p-button-warning' : 'p-button-success'"
       />
     </template>
-  </Dialog>
+    </Dialog>
+  </div>
 </template>
 
 <script setup lang="ts">

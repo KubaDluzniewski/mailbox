@@ -1,33 +1,31 @@
 <template>
-  <div class="flex h-full gap-6">
+  <div class="flex h-full flex-col gap-4 xl:flex-row">
     <div
-      class="w-1/3 min-w-[350px] flex flex-col glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden"
+      class="w-full xl:w-[370px] xl:min-w-[370px] flex flex-col rounded-2xl border border-stone-200 bg-white overflow-hidden"
     >
-      <div
-        class="p-5 border-b border-slate-100/50 flex justify-between items-center shrink-0 bg-gradient-to-r from-white/50 to-blue-50/30"
-      >
-        <h2 class="text-xl font-black gradient-text">{{ t('main.received') }}</h2>
+      <div class="p-4 border-b border-stone-200 flex justify-between items-center shrink-0 bg-stone-50">
+        <h2 class="text-lg font-semibold tracking-tight text-zinc-900">{{ t('main.received') }}</h2>
         <Button
           icon="pi pi-filter"
           @click="showFilterPanel = !showFilterPanel"
           :class="[
-            'p-button-rounded p-button-text p-button-sm hover-lift',
-            filterStatus !== 'all' ? 'text-blue-600' : 'text-slate-400',
+            'p-button-rounded p-button-text p-button-sm',
+            filterStatus !== 'all' ? 'text-zinc-900' : 'text-zinc-500',
           ]"
           v-tooltip.top="'Filtruj'"
         />
       </div>
-      <!-- Filter Panel -->
-      <div v-if="showFilterPanel" class="px-5 py-3 border-b border-slate-100/50 bg-blue-50/30">
-        <p class="text-xs font-bold text-slate-500 mb-2">Status:</p>
-        <div class="flex gap-2">
+
+      <div v-if="showFilterPanel" class="px-4 py-3 border-b border-stone-200 bg-stone-50">
+        <p class="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Status</p>
+        <div class="flex flex-wrap gap-2">
           <button
             @click="filterStatus = 'all'"
             :class="[
-              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
               filterStatus === 'all'
-                ? 'bg-slate-700 text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-100',
+                ? 'bg-zinc-900 text-white border-zinc-900'
+                : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
             ]"
           >
             Wszystkie
@@ -35,10 +33,10 @@
           <button
             @click="filterStatus = 'unread'"
             :class="[
-              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
               filterStatus === 'unread'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-100',
+                ? 'bg-zinc-900 text-white border-zinc-900'
+                : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
             ]"
           >
             Nieprzeczytane
@@ -46,63 +44,58 @@
           <button
             @click="filterStatus = 'read'"
             :class="[
-              'px-3 py-1 text-xs font-medium rounded-full transition-all',
+              'px-3 py-1.5 text-xs font-medium rounded-md border transition-colors',
               filterStatus === 'read'
-                ? 'bg-green-600 text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-100',
+                ? 'bg-zinc-900 text-white border-zinc-900'
+                : 'bg-white text-zinc-600 border-stone-300 hover:border-zinc-700 hover:text-zinc-900',
             ]"
           >
             Przeczytane
           </button>
         </div>
       </div>
-      <div class="px-5 py-3 border-b border-slate-100/50 bg-white/50">
+
+      <div class="px-4 py-3 border-b border-stone-200 bg-white">
         <input
           v-model="search"
           type="text"
           :placeholder="t('main.search')"
-          class="w-full p-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+          class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-300 focus:border-zinc-600 transition-colors"
         />
       </div>
 
       <div class="flex-1 overflow-y-auto custom-scrollbar">
-        <div v-if="loading" class="p-4 space-y-4">
-          <div v-for="i in 5" :key="i" class="h-20 bg-slate-100 rounded-xl animate-pulse"></div>
+        <div v-if="loading" class="p-4 space-y-3">
+          <div v-for="i in 5" :key="i" class="h-20 bg-stone-100 rounded-lg animate-pulse"></div>
         </div>
         <div
           v-else-if="filteredMessages.length === 0"
-          class="flex flex-col items-center justify-center h-full text-slate-400 p-8 text-center"
+          class="flex flex-col items-center justify-center h-full text-zinc-400 p-8 text-center"
         >
-          <i class="pi pi-inbox text-5xl mb-4 opacity-20"></i>
-          <p class="font-medium text-slate-500">Brak nowych wiadomości</p>
+          <i class="pi pi-inbox text-4xl mb-3 opacity-30"></i>
+          <p class="font-medium text-zinc-500">Brak nowych wiadomości</p>
         </div>
-        <div v-else>
+        <div v-else class="stagger-in">
           <div
             v-for="msg in filteredMessages"
             :key="msg.id"
             @click="handleMessageClick(msg)"
             :class="[
-              'p-5 border-b border-slate-50 cursor-pointer transition-all relative group hover-lift',
-              selectedMessage?.id === msg.id
-                ? 'bg-gradient-to-r from-blue-50 to-purple-50/30'
-                : 'hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50/20',
+              'p-4 border-b border-stone-200 cursor-pointer transition-colors relative',
+              selectedMessage?.id === msg.id ? 'bg-stone-100' : 'hover:bg-stone-50',
             ]"
           >
             <div
               v-if="selectedMessage?.id === msg.id"
-              class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-slate-600 to-slate-700 rounded-r-full"
+              class="absolute left-0 top-0 bottom-0 w-1 bg-zinc-900 rounded-r-full"
             ></div>
             <div class="flex justify-between items-start mb-1">
-              <div class="flex items-center gap-2">
-                <!-- Unread indicator -->
-                <div
-                  v-if="!msg.isRead"
-                  class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"
-                ></div>
+              <div class="flex items-center gap-2 min-w-0">
+                <div v-if="!msg.isRead" class="w-2 h-2 bg-zinc-900 rounded-full flex-shrink-0"></div>
                 <span
                   :class="[
-                    'text-sm',
-                    msg.isRead ? 'font-medium text-slate-700' : 'font-bold text-slate-900',
+                    'text-sm truncate',
+                    msg.isRead ? 'font-medium text-zinc-700' : 'font-semibold text-zinc-900',
                   ]"
                 >
                   {{
@@ -112,51 +105,46 @@
                   }}
                 </span>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-tighter">{{
+              <span class="text-[11px] font-semibold text-zinc-500 uppercase tracking-tight ml-3">{{
                 formatTime(msg.createdAt)
               }}</span>
             </div>
             <p
               :class="[
                 'text-sm mb-1 truncate',
-                msg.isRead ? 'font-medium text-slate-700' : 'font-extrabold text-slate-900',
+                msg.isRead ? 'font-medium text-zinc-700' : 'font-semibold text-zinc-900',
               ]"
             >
               {{ msg.subject }}
             </p>
-            <p class="text-xs text-slate-400 line-clamp-1 italic">
-              {{ msg.body.replace(/<[^>]*>/g, '') }}
-            </p>
+            <p class="text-xs text-zinc-500 line-clamp-1">{{ msg.body.replace(/<[^>]*>/g, '') }}</p>
           </div>
         </div>
       </div>
     </div>
 
     <div
-      class="flex-1 glass-effect rounded-3xl border border-white/50 shadow-lg overflow-hidden flex flex-col"
+      class="flex-1 rounded-2xl border border-stone-200 bg-white overflow-hidden flex flex-col min-h-0"
     >
       <template v-if="selectedMessage">
-        <div class="p-8 border-b border-slate-100 bg-slate-50/30 shrink-0">
-          <div class="flex justify-between items-start mb-6">
-            <h1 class="text-3xl font-black text-slate-900 leading-tight">
+        <div class="p-6 sm:p-7 border-b border-stone-200 bg-stone-50 shrink-0">
+          <div class="flex justify-between items-start gap-4 mb-5">
+            <h1 class="text-2xl sm:text-3xl font-semibold text-zinc-900 leading-tight">
               {{ selectedMessage.subject }}
             </h1>
             <div class="flex gap-2">
               <Button
                 icon="pi pi-reply"
-                class="p-button-outlined p-button-sm rounded-xl hover-lift hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all"
+                class="p-button-outlined p-button-sm rounded-lg"
                 v-tooltip.top="'Odpowiedz'"
               />
               <Button
                 :icon="selectedMessage?.isRead ? 'pi pi-envelope' : 'pi pi-envelope-open'"
-                class="p-button-outlined p-button-secondary p-button-sm rounded-xl hover-lift hover:bg-gradient-to-r hover:from-slate-50 hover:to-blue-50 transition-all"
+                class="p-button-outlined p-button-secondary p-button-sm rounded-lg"
                 :disabled="!selectedMessage?.id"
                 @click="toggleReadState"
               />
-              <Button
-                icon="pi pi-trash"
-                class="p-button-outlined p-button-danger p-button-sm rounded-xl hover-lift hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all"
-              />
+              <Button icon="pi pi-trash" class="p-button-outlined p-button-danger p-button-sm rounded-lg" />
             </div>
           </div>
 
@@ -171,10 +159,10 @@
               "
               shape="circle"
               size="large"
-              class="bg-gradient-to-br from-slate-100 to-gray-100 text-slate-700 font-bold shadow-md hover-glow"
+              class="bg-zinc-900 text-white font-semibold"
             />
             <div>
-              <p class="font-bold text-slate-900">
+              <p class="font-semibold text-zinc-900">
                 {{
                   selectedMessage &&
                   selectedMessage.recipients &&
@@ -183,28 +171,25 @@
                     : 'Nadawca'
                 }}
               </p>
-              <p class="text-xs text-slate-500">
+              <p class="text-xs text-zinc-500">
                 Do: Ty <span class="mx-1">•</span> {{ formatDate(selectedMessage?.createdAt) }}
               </p>
             </div>
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-10 prose prose-slate max-w-none">
-          <div class="text-slate-700 leading-relaxed text-lg" v-html="selectedMessage.body"></div>
+        <div class="flex-1 overflow-y-auto p-6 sm:p-8 prose prose-zinc max-w-none">
+          <div class="text-zinc-700 leading-relaxed text-base sm:text-lg" v-html="selectedMessage.body"></div>
         </div>
       </template>
 
-      <div
-        v-else
-        class="flex-1 flex flex-col items-center justify-center text-slate-300 bg-slate-50/20"
-      >
-        <div
-          class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-inner mb-6"
-        >
-          <i class="pi pi-envelope-open text-5xl opacity-20"></i>
+      <div v-else class="flex-1 flex flex-col items-center justify-center text-zinc-400 bg-stone-50/70 p-8">
+        <div class="w-24 h-24 bg-white border border-stone-200 rounded-full flex items-center justify-center mb-5">
+          <i class="pi pi-envelope-open text-4xl opacity-30"></i>
         </div>
-        <p class="text-lg font-bold text-slate-400">Wybierz wiadomość, aby ją wyświetlić</p>
+        <p class="text-base sm:text-lg font-semibold text-zinc-500 text-center">
+          Wybierz wiadomość, aby ją wyświetlić
+        </p>
       </div>
     </div>
   </div>

@@ -1,35 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Roboto, sans-serif;
+  font-family: 'Source Sans 3', sans-serif;
 }
 
-/* Nowoczesne paski przewijania */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 700;
+}
+
+/* Minimalistyczne paski przewijania */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f5f5f4;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: #d6d3d1;
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #cbd5e1;
+  background: #a8a29e;
 }
 
-/* Nadpisanie PrimeVue pod styl Blue */
+/* PrimeVue w neutralnym, prostym stylu */
 .p-button.p-button-outlined {
-  border-color: #e2e8f0 !important;
-  color: #64748b !important;
+  border-color: #d6d3d1 !important;
+  color: #44403c !important;
 }
 .p-button.p-button-outlined:hover {
-  background: #f8fafc !important;
-  border-color: #3b82f6 !important;
-  color: #3b82f6 !important;
+  background: #f5f5f4 !important;
+  border-color: #1f2937 !important;
+  color: #1f2937 !important;
 }

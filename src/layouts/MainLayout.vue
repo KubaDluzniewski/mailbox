@@ -1,61 +1,58 @@
 ﻿<template>
-  <div class="flex h-screen font-sans text-slate-900 overflow-hidden">
-    <aside
-      class="w-72 glass-effect border-r border-white/50 flex flex-col transition-all duration-300 z-30 shadow-xl"
-    >
+  <div class="flex h-screen overflow-hidden text-zinc-900">
+    <aside class="w-[272px] shrink-0 border-r border-stone-200 bg-stone-50/95 backdrop-blur-[2px]">
       <NavBar />
     </aside>
 
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div class="flex-1 min-w-0 flex flex-col overflow-hidden">
       <header
-        class="h-16 glass-effect border-b border-white/50 flex items-center justify-between px-8 shrink-0 shadow-sm"
+        class="h-16 shrink-0 border-b border-stone-200 bg-stone-50/90 px-4 sm:px-6 flex items-center justify-between"
       >
-        <div class="flex-1 max-w-2xl">
-          <div class="relative group"></div>
+        <div class="flex items-center gap-3">
+          <span class="h-2 w-2 rounded-full bg-zinc-900"></span>
+          <p class="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-zinc-600">
+            Mailbox Workspace
+          </p>
         </div>
 
-        <div class="flex items-center gap-4 ml-4">
+        <div class="flex items-center gap-3 sm:gap-4">
           <button
-            class="p-2 text-slate-500 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-full relative transition-all hover-lift group"
+            class="p-2 text-zinc-600 hover:text-zinc-900 hover:bg-stone-200 rounded-full relative transition-colors"
             @click="router.push('/')"
           >
-            <i
-              class="pi pi-bell text-lg transition-transform group-hover:scale-110 group-hover:rotate-12"
-            ></i>
-            <span v-if="unreadCount > 0" class="absolute top-2 right-2 flex h-4 w-4">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white justify-center items-center"
-              >
-                {{ unreadCount > 9 ? '9+' : unreadCount }}
-              </span>
+            <i class="pi pi-bell text-base"></i>
+            <span
+              v-if="unreadCount > 0"
+              class="absolute -top-0.5 -right-0.5 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-zinc-900 px-1 text-[10px] font-semibold text-white"
+            >
+              {{ unreadCount > 9 ? '9+' : unreadCount }}
             </span>
           </button>
 
-          <div class="h-8 w-px bg-slate-200 mx-2"></div>
+          <div class="h-7 w-px bg-stone-300"></div>
 
-          <div class="flex items-center gap-3 pl-2">
+          <div class="flex items-center gap-3">
             <div class="text-right hidden sm:block">
-              <p class="text-sm font-bold leading-none">{{ userStore.user?.name }}</p>
-              <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">
+              <p class="text-sm font-semibold leading-none">{{ userStore.user?.name }}</p>
+              <p class="text-[11px] text-zinc-500 mt-1 uppercase tracking-[0.14em]">
                 {{ userRoleLabel }}
               </p>
             </div>
             <Avatar
               :label="userInitials"
               shape="circle"
-              class="bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-lg hover-glow cursor-pointer transition-all hover:scale-110"
+              class="bg-zinc-900 text-white cursor-pointer"
               @click="router.push('/settings')"
             />
           </div>
         </div>
       </header>
 
-      <main class="flex-1 overflow-hidden p-6">
+      <main class="flex-1 overflow-hidden p-3 sm:p-4 lg:p-6">
         <router-view v-slot="{ Component, route }">
-          <component :is="Component" :key="route.path" />
+          <Transition name="route" mode="out-in">
+            <component :is="Component" :key="route.fullPath" />
+          </Transition>
         </router-view>
       </main>
     </div>
@@ -109,12 +106,18 @@ const userRoleLabel = computed(() => {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+.route-enter-active,
+.route-leave-active {
+  transition: opacity 180ms ease, transform 220ms ease;
 }
-.fade-enter-from,
-.fade-leave-to {
+
+.route-enter-from {
   opacity: 0;
+  transform: translateY(8px);
+}
+
+.route-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 </style>
